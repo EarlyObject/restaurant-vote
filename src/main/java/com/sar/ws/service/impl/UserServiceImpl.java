@@ -1,10 +1,12 @@
 package com.sar.ws.service.impl;
 
+import com.sar.ws.exceptions.UserServiceException;
 import com.sar.ws.io.repositories.UserRepository;
 import com.sar.ws.io.entity.UserEntity;
 import com.sar.ws.service.UserService;
 import com.sar.ws.shared.dto.UserDto;
 import com.sar.ws.shared.utils.Utils;
+import com.sar.ws.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
@@ -75,10 +77,39 @@ public class UserServiceImpl implements UserService {
         UserEntity userEntity = userRepository.findByUserId(userId);
 
         if (userEntity == null) {
-            throw new UsernameNotFoundException(userId);
+            throw new UsernameNotFoundException("User with ID: " + userId + " not found");
         }
         BeanUtils.copyProperties(userEntity, returnValue);
 
         return returnValue;
+    }
+
+    @Override
+    public UserDto updateUser(String userId, UserDto user) {
+        UserDto returnValue = new UserDto();
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if (userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+
+        //check if you need to update more fields
+        userEntity.setFirstName(user.getFirstName());
+        userEntity.setLastName(user.getLastName());
+
+        UserEntity updatedUserDetails = userRepository.save(userEntity);
+        BeanUtils.copyProperties(updatedUserDetails, returnValue);
+
+        return returnValue;
+    }
+
+    @Override
+    public void deleteUser(String userId) {
+        UserEntity userEntity = userRepository.findByUserId(userId);
+
+        if (userEntity == null) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+        userRepository.delete(userEntity);
     }
 }
