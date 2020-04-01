@@ -23,39 +23,27 @@ public class RestaurantController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestaurantRest create(@RequestBody RestaurantDetailsRequestModel restaurantModel) throws Exception {
-        RestaurantRest returnValue = new RestaurantRest();
+    public RestaurantDto create(@RequestBody RestaurantDetailsRequestModel restaurantModel) throws Exception {
 
         RestaurantDto restaurantDto = new RestaurantDto();
         BeanUtils.copyProperties(restaurantModel, restaurantDto);
 
-        RestaurantDto createdRestaurant = restaurantService.create(restaurantDto);
-        BeanUtils.copyProperties(createdRestaurant, returnValue);
-
-        return returnValue;
+        return restaurantService.create(restaurantDto);
     }
 
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestaurantRest get(@PathVariable Long id) throws Exception {
-        RestaurantRest returnValue = new RestaurantRest();
+    public RestaurantDto get(@PathVariable Long id) throws Exception {
 
-        RestaurantDto restaurantDto = restaurantService.getById(id);
-        BeanUtils.copyProperties(restaurantDto, returnValue);
-
-        return returnValue;
+        return restaurantService.getById(id);
     }
 
     @PutMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestaurantRest update (@PathVariable Long id, @RequestBody RestaurantDetailsRequestModel restaurantModel) {
-        RestaurantRest returnValue = new RestaurantRest();
+    public RestaurantDto update (@PathVariable Long id, @RequestBody RestaurantDetailsRequestModel restaurantModel) {
 
         RestaurantDto restaurantDto = new RestaurantDto();
         BeanUtils.copyProperties(restaurantModel, restaurantDto);
 
-        RestaurantDto updatedRestaurant = restaurantService.update(id, restaurantDto);
-        BeanUtils.copyProperties(updatedRestaurant, returnValue);
-
-        return returnValue;
+        return restaurantService.update(id, restaurantDto);
     }
 
     @DeleteMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -70,21 +58,13 @@ public class RestaurantController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<RestaurantRest> getRestaurants(@RequestParam(value = "page", defaultValue = "0") int page,
+    public List<RestaurantDto> getRestaurants(@RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "limit", defaultValue = "25") int limit) {
-        List<RestaurantRest> returnValue = new ArrayList<>();
 
         if (page > 0) {
             page = page - 1;
         }
 
-        List<RestaurantDto> restaurantDtos = restaurantService.getRestaurants(page, limit);
-        for (RestaurantDto restaurantDto : restaurantDtos) {
-            RestaurantRest restaurantRest = new RestaurantRest();
-            BeanUtils.copyProperties(restaurantDto, restaurantRest);
-            returnValue.add(restaurantRest);
-        }
-
-        return returnValue;
+        return restaurantService.getRestaurants(page, limit);
     }
 }

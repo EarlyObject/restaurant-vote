@@ -3,11 +3,19 @@ package com.sar.ws.shared.utils;
 import org.springframework.stereotype.Component;
 
 import java.security.SecureRandom;
+import java.time.LocalDate;
 import java.util.Random;
 import java.util.stream.IntStream;
 
 @Component
 public class Utils {
+
+    private LocalDate currentDate = LocalDate.of(2020, 4, 2);
+
+    public LocalDate getCurrentDate() {
+        return currentDate;
+    }
+
 
     private final Random RANDOM = new SecureRandom();
 

@@ -1,8 +1,8 @@
 package com.sar.ws.service.impl;
 
 import com.sar.ws.exceptions.UserServiceException;
-import com.sar.ws.io.repositories.UserRepository;
 import com.sar.ws.io.entity.UserEntity;
+import com.sar.ws.io.repositories.UserRepository;
 import com.sar.ws.service.UserService;
 import com.sar.ws.shared.dto.UserDto;
 import com.sar.ws.shared.utils.Utils;
@@ -14,7 +14,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -122,10 +121,10 @@ public class UserServiceImpl implements UserService {
         List<UserDto> returnValue = new ArrayList<>();
 
         Pageable pageableRequest = PageRequest.of(page, limit);
-        Page<UserEntity>  usersPage = userRepository.findAll(pageableRequest);
+        Page<UserEntity> usersPage = userRepository.findAll(pageableRequest);
         List<UserEntity> users = usersPage.getContent();
 
-        for (UserEntity userEntity: users) {
+        for (UserEntity userEntity : users) {
             UserDto userDto = new UserDto();
             BeanUtils.copyProperties(userEntity, userDto);
             returnValue.add(userDto);

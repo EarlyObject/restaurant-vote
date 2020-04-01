@@ -1,9 +1,11 @@
 package com.sar.ws.service.impl;
 
 import com.sar.ws.exceptions.RestaurantServiceException;
+import com.sar.ws.io.entity.Meal;
 import com.sar.ws.io.entity.Restaurant;
 import com.sar.ws.io.repositories.RestaurantRepository;
 import com.sar.ws.service.RestaurantService;
+import com.sar.ws.shared.dto.MealDto;
 import com.sar.ws.shared.dto.RestaurantDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,9 +27,9 @@ public class RestaurantServiceImpl implements RestaurantService {
     @Override
     public RestaurantDto create(RestaurantDto restaurantDto) {
 
-      /*  if (restaurantRepository.findById(restaurantDto.getId()) != null) {
+        if (restaurantRepository.findById(restaurantDto.getId()).isPresent()) {
             throw new RuntimeException("Record already exists");
-        }*/
+        }
 
         Restaurant restaurant = new Restaurant();
         BeanUtils.copyProperties(restaurantDto, restaurant);
@@ -41,15 +43,53 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantDto getById(Long id) {
-        RestaurantDto returnValue = new RestaurantDto();
-        Optional<Restaurant> restaurant = restaurantRepository.findById(id);
+        //В этом методе, и в getAll достается ресторан вместе с едой которая содержит
+        //рестораны (каскад), надо разобраться
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
 
-        if (!restaurant.isPresent()) {
+
+        //Здесь надо сделать проверку на обязательные поля либо через Validation либо через перебор поле
+        if (!restaurantOptional.isPresent()) {
             throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
         }
+        Restaurant restaurant = restaurantOptional.get();
 
-        BeanUtils.copyProperties(restaurant.get(), returnValue);
-        return returnValue;
+        RestaurantDto restaurantDto = new RestaurantDto();
+        BeanUtils.copyProperties(restaurant, restaurantDto);
+
+  /*      ModelMapper modelMapper = new ModelMapper();
+        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
+
+
+        modelMapper.typeMap(Meal.class, MealDto.class).addMappings(mapper -> {
+            mapper.map(src->src.getRestaurant().getId(),
+                    MealDto::setRestaurantId);
+
+           *//* mapper.map(src -> src.getBillingAddress().getCity(),
+                    Destination::setBillingCity);*//*
+        });
+        RestaurantDto restaurantDto = modelMapper.map(restaurant, RestaurantDto.class);*/
+
+
+       /* restaurantDto.setId(restaurant.getId());
+        restaurantDto.setName(restaurant.getName());
+        restaurantDto.setAddress(restaurant.getAddress());
+        restaurantDto.setPhoneNumber(restaurant.getPhoneNumber());
+
+        List<MealDto> mealDtos = new ArrayList<>();
+        for (Meal meal : restaurant.getMeals()) {
+            MealDto mealDto = new MealDto();
+            mealDto.setId(meal.getId());
+            mealDto.setRestaurantId(restaurant.getId());
+            mealDto.setDate(meal.getDate());
+            mealDto.setDescription(meal.getDescription());
+            mealDto.setPrice(meal.getPrice());
+
+            mealDtos.add(mealDto);
+        }
+        restaurantDto.setMeals(mealDtos);*/
+
+        return restaurantDto;
     }
 
     @Override
@@ -58,6 +98,11 @@ public class RestaurantServiceImpl implements RestaurantService {
 
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
 
+     /*  restaurantRepository.findById(id)
+               .filter(restaurant->restaurant.getMeals()
+               .forEach(meal-> meal.getDate().isEqual(LocalDate.of(2020, 4, 2))));
+
+*/
         if (!restaurantOptional.isPresent()) {
             throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
         }
@@ -93,7 +138,9 @@ public class RestaurantServiceImpl implements RestaurantService {
 
         for (Restaurant restaurant : restaurants) {
             RestaurantDto restaurantDto = new RestaurantDto();
-            BeanUtils.copyProperties(restaurant, restaurantDto);
+             BeanUtils.copyProperties(restaurant, restaurantDto);
+
+
             returnValue.add(restaurantDto);
         }
 

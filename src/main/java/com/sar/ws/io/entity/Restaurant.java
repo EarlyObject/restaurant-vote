@@ -24,10 +24,9 @@ public class Restaurant {
     @NotBlank
     private String phoneNumber;
 
-    @OneToMany(fetch = FetchType.EAGER, mappedBy = "restaurant")
+    @OneToMany(mappedBy = "restaurantId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     @OrderBy("date DESC")
-    private List<Menu> menus;
-
+    private List<Meal> meals;
 
     public long getId() {
         return id;
@@ -61,11 +60,11 @@ public class Restaurant {
         this.phoneNumber = phoneNumber;
     }
 
-    public List<Menu> getMenus() {
-        return menus;
+    public List<Meal> getMeals() {
+        return meals;
     }
 
-    public void setMenus(List<Menu> menus) {
-        this.menus = menus;
+    public void setMeals(List<Meal> meals) {
+        this.meals = meals;
     }
 }
