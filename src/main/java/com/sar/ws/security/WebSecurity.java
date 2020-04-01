@@ -26,11 +26,19 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
         http.csrf().disable().authorizeRequests()
                 .antMatchers(HttpMethod.POST, SecurityConstants.SIGN_UP_URL)
                 .permitAll()
-                .anyRequest().authenticated().and()
-                .addFilter(getAuthenticationFilter())
-                .addFilter(new AuthorizationFilter(authenticationManager()))
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
+                .antMatchers(HttpMethod.GET, SecurityConstants.RESTAURANT_URL)
+                .permitAll()
+                .antMatchers(HttpMethod.POST, SecurityConstants.RESTAURANT_URL)
+                .permitAll()
+                .antMatchers(HttpMethod.PUT, SecurityConstants.RESTAURANT_URL)
+                .permitAll()
+                .antMatchers(HttpMethod.DELETE, SecurityConstants.RESTAURANT_URL)
+                .permitAll();
+//                .anyRequest().authenticated().and()
+//                .addFilter(getAuthenticationFilter())
+//                .addFilter(new AuthorizationFilter(authenticationManager()))
+//                .sessionManagement()
+//                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
     }
 
     @Override
