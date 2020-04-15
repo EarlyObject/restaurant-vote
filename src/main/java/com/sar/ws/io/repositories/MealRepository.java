@@ -9,5 +9,4 @@ import java.util.List;
 
 @Repository
 public interface MealRepository extends PagingAndSortingRepository<Meal, Long> {
-    public List<Meal>  getAllByRestaurantId(Long id);
 }

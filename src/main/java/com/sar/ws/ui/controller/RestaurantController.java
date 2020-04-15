@@ -8,6 +8,7 @@ import com.sar.ws.ui.model.response.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -20,6 +21,7 @@ public class RestaurantController {
     @Autowired
     RestaurantService restaurantService;
 
+    @Secured("ROLE_ADMIN")
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -37,6 +39,7 @@ public class RestaurantController {
         return restaurantService.getById(id);
     }
 
+    @Secured("ROLE_ADMIN")
     @PutMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public RestaurantDto update (@PathVariable Long id, @RequestBody RestaurantDetailsRequestModel restaurantModel) {
 
@@ -46,6 +49,7 @@ public class RestaurantController {
         return restaurantService.update(id, restaurantDto);
     }
 
+    @Secured("ROLE_ADMIN")
     @DeleteMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public OperatioStatusModel delete(@PathVariable Long id) {
         OperatioStatusModel returnValue = new OperatioStatusModel();
@@ -57,6 +61,7 @@ public class RestaurantController {
         return returnValue;
     }
 
+    //consult if get and getAll methods access should be allowed to unregistered users
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<RestaurantDto> getRestaurants(@RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "limit", defaultValue = "25") int limit) {

@@ -8,10 +8,17 @@ import com.sar.ws.ui.model.response.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.security.access.annotation.Secured;
+import org.springframework.security.access.prepost.PostAuthorize;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+
+import static com.sar.ws.shared.Roles.ROLE_USER;
 
 @RestController
 @RequestMapping("users") //http://localhost:8080/restaurant-vote/users
@@ -32,6 +39,7 @@ public class UserController {
 
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails, userDto);
+        userDto.setRoles(new HashSet<>(Arrays.asList(ROLE_USER.name())));
 
         UserDto createdUser = userService.createUser(userDto);
         BeanUtils.copyProperties(createdUser, returnValue);
@@ -39,6 +47,7 @@ public class UserController {
         return returnValue;
     }
 
+    @PostAuthorize("hasRole('ADMIN') or returnObject.userId == principal.userId")
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserRest getUser(@PathVariable String id) {
         UserRest returnValue = new UserRest();
@@ -49,6 +58,7 @@ public class UserController {
         return returnValue;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
     @PutMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public UserRest updateUser(@PathVariable String id, @RequestBody UserDetailsRequestModel userDetails) {
         UserRest returnValue = new UserRest();
@@ -62,6 +72,7 @@ public class UserController {
         return returnValue;
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
     @DeleteMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public OperatioStatusModel deleteUser(@PathVariable String id) {
         OperatioStatusModel returnValue = new OperatioStatusModel();
@@ -73,6 +84,7 @@ public class UserController {
         return returnValue;
     }
 
+    @Secured("ROLE_ADMIN")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<UserRest> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "limit", defaultValue = "25") int limit) {

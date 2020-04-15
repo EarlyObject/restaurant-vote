@@ -2,10 +2,11 @@ package com.sar.ws.io.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.util.List;
 
 @Entity(name = "restaurants")
-public class Restaurant {
+public class Restaurant implements Serializable {
     private static final long serialVersionUID = -157747531241672180L;
 
     @Id

@@ -1,10 +1,9 @@
 package com.sar.ws.shared.dto;
 
-import com.sar.ws.io.entity.Meal;
-
+import java.io.Serializable;
 import java.util.List;
 
-public class RestaurantDto {
+public class RestaurantDto implements Serializable {
     private static final long serialVersionUID = 7024178261305933055L;
     private long id;
     private String name;

@@ -1,11 +1,9 @@
 package com.sar.ws.service.impl;
 
 import com.sar.ws.exceptions.RestaurantServiceException;
-import com.sar.ws.io.entity.Meal;
 import com.sar.ws.io.entity.Restaurant;
 import com.sar.ws.io.repositories.RestaurantRepository;
 import com.sar.ws.service.RestaurantService;
-import com.sar.ws.shared.dto.MealDto;
 import com.sar.ws.shared.dto.RestaurantDto;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -47,7 +45,9 @@ public class RestaurantServiceImpl implements RestaurantService {
         //рестораны (каскад), надо разобраться
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
 
-
+      /*  List<Restaurant> restaurantByDate = restaurantRepository
+                .findAllByMealsByDate(LocalDate.of(2020,4, 2));
+*/
         //Здесь надо сделать проверку на обязательные поля либо через Validation либо через перебор поле
         if (!restaurantOptional.isPresent()) {
             throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
@@ -138,7 +138,7 @@ public class RestaurantServiceImpl implements RestaurantService {
 
         for (Restaurant restaurant : restaurants) {
             RestaurantDto restaurantDto = new RestaurantDto();
-             BeanUtils.copyProperties(restaurant, restaurantDto);
+            BeanUtils.copyProperties(restaurant, restaurantDto);
 
 
             returnValue.add(restaurantDto);

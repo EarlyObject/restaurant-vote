@@ -1,6 +1,9 @@
 package com.sar.ws.shared.dto;
 
+import com.sar.ws.io.entity.Role;
+
 import java.io.Serializable;
+import java.util.Collection;
 
 public class UserDto implements Serializable {
     private static final long serialVersionUID = -7050300058832249514L;
@@ -13,6 +16,7 @@ public class UserDto implements Serializable {
     private String encryptedPassword;
     private String emailVerificationToken;
     private Boolean emailVerificationStatus = false;
+    private Collection<String> roles;
 
     public long getId() {
         return id;
@@ -84,5 +88,13 @@ public class UserDto implements Serializable {
 
     public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
         this.emailVerificationStatus = emailVerificationStatus;
+    }
+
+    public Collection<String> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<String> roles) {
+        this.roles = roles;
     }
 }

@@ -1,12 +1,11 @@
 package com.sar.ws.io.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import javax.persistence.*;
+import java.io.Serializable;
+import java.util.Collection;
 
-@Entity(name="users")
-public class UserEntity {
+@Entity(name = "users")
+public class UserEntity implements Serializable {
     private static final long serialVersionUID = 4746861687784182986L;
 
     @Id
@@ -22,7 +21,8 @@ public class UserEntity {
     @Column(nullable = false, length = 50)
     private String lastName;
 
-    @Column(nullable = false, length = 120, unique = true)
+    //   @Column(nullable = false, length = 120, unique = true)
+    @Column(nullable = false, length = 120)
     private String email;
 
     @Column(nullable = false)
@@ -33,6 +33,11 @@ public class UserEntity {
     @Column(nullable = false)
     private Boolean emailVerificationStatus = false;
 
+    @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
+    private Collection<Role> roles;
 
     public long getId() {
         return id;
@@ -96,5 +101,13 @@ public class UserEntity {
 
     public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
         this.emailVerificationStatus = emailVerificationStatus;
+    }
+
+    public Collection<Role> getRoles() {
+        return roles;
+    }
+
+    public void setRoles(Collection<Role> roles) {
+        this.roles = roles;
     }
 }

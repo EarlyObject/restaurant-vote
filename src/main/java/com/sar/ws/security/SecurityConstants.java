@@ -9,6 +9,8 @@ public class SecurityConstants {
     public static final String SIGN_UP_URL = "/users";
     //пересмотреть позже
     public static final String RESTAURANT_URL = "/restaurants";
+    public static final String MEAL_URL = "/meals";
+
 
 
     public static String getTokenSecret()

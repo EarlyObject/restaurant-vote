@@ -1,8 +1,11 @@
 package com.sar.ws.service.impl;
 
 import com.sar.ws.exceptions.UserServiceException;
+import com.sar.ws.io.entity.Role;
 import com.sar.ws.io.entity.UserEntity;
+import com.sar.ws.io.repositories.RoleRepository;
 import com.sar.ws.io.repositories.UserRepository;
+import com.sar.ws.security.UserPrincipal;
 import com.sar.ws.service.UserService;
 import com.sar.ws.shared.dto.UserDto;
 import com.sar.ws.shared.utils.Utils;
@@ -12,13 +15,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashSet;
 import java.util.List;
 
 @Service
@@ -33,10 +37,13 @@ public class UserServiceImpl implements UserService {
     @Autowired
     BCryptPasswordEncoder bCryptPasswordEncoder;
 
+    @Autowired
+    RoleRepository roleRepository;
+
     @Override
     public UserDto createUser(UserDto user) {
 
-        if (userRepository.findUserByEmail(user.getEmail()) != null) {
+        if (userRepository.findByEmail(user.getEmail()) != null) {
             throw new RuntimeException("Record already exists");
         }
 
@@ -45,6 +52,19 @@ public class UserServiceImpl implements UserService {
 
         userEntity.setUserId(utils.generateUserId(20));
         userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+
+        //Set roles
+        Collection<Role> roleEntities = new HashSet<>();
+        for (String role : user.getRoles()) {
+            Role roleEntity = roleRepository.findByName(role);
+            if (roleEntity != null) {
+                roleEntities.add(roleEntity);
+            }
+        }
+
+        userEntity.setRoles(roleEntities);
+
+
         UserEntity storedUserDetails = userRepository.save(userEntity);
         UserDto returnValue = new UserDto();
         BeanUtils.copyProperties(storedUserDetails, returnValue);
@@ -53,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto getUser(String email) {
-        UserEntity userEntity = userRepository.findUserByEmail(email);
+        UserEntity userEntity = userRepository.findByEmail(email);
         if (userEntity == null) {
             throw new UsernameNotFoundException(email);
         }
@@ -65,13 +85,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findUserByEmail(email);
+        UserEntity userEntity = userRepository.findByEmail(email);
 
         if (userEntity == null) {
             throw new UsernameNotFoundException(email);
         }
 
-        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
+//        return new User(userEntity.getEmail(), userEntity.getEncryptedPassword(), new ArrayList<>());
+
+        return new UserPrincipal(userEntity);
     }
 
     @Override
@@ -96,7 +118,7 @@ public class UserServiceImpl implements UserService {
             throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
 
-        //check if you need to update more fields
+        //check if need to update more fields
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
 
