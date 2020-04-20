@@ -1,17 +1,22 @@
 package com.sar.ws.ui.controller;
 
+import com.sar.ws.io.entity.Restaurant;
+import com.sar.ws.io.repositories.RestaurantRepository;
 import com.sar.ws.service.RestaurantService;
 import com.sar.ws.shared.dto.RestaurantDto;
-import com.sar.ws.shared.dto.UserDto;
 import com.sar.ws.ui.model.request.RestaurantDetailsRequestModel;
-import com.sar.ws.ui.model.response.*;
+import com.sar.ws.ui.model.response.OperatioStatusModel;
+import com.sar.ws.ui.model.response.RequestOperationName;
+import com.sar.ws.ui.model.response.RequestOperationStatus;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -20,6 +25,9 @@ public class RestaurantController {
 
     @Autowired
     RestaurantService restaurantService;
+
+    @Autowired
+    RestaurantRepository restaurantRepository;
 
     @Secured("ROLE_ADMIN")
     @PostMapping(
@@ -41,7 +49,7 @@ public class RestaurantController {
 
     @Secured("ROLE_ADMIN")
     @PutMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestaurantDto update (@PathVariable Long id, @RequestBody RestaurantDetailsRequestModel restaurantModel) {
+    public RestaurantDto update(@PathVariable Long id, @RequestBody RestaurantDetailsRequestModel restaurantModel) {
 
         RestaurantDto restaurantDto = new RestaurantDto();
         BeanUtils.copyProperties(restaurantModel, restaurantDto);
@@ -64,11 +72,15 @@ public class RestaurantController {
     //consult if get and getAll methods access should be allowed to unregistered users
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<RestaurantDto> getRestaurants(@RequestParam(value = "page", defaultValue = "0") int page,
-                                   @RequestParam(value = "limit", defaultValue = "25") int limit) {
+                                              @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
         if (page > 0) {
             page = page - 1;
         }
+
+        Pageable pageableRequest = PageRequest.of(0, 5);
+        Page<Restaurant> restaurantPage = restaurantRepository.findAllWithoutMeals(pageableRequest);
+        List<Restaurant> restaurants = restaurantPage.getContent();
 
         return restaurantService.getRestaurants(page, limit);
     }

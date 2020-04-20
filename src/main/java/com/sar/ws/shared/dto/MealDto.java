@@ -10,7 +10,10 @@ public class MealDto {
     private LocalDate date;
     private String description;
     private Double price;
-    private long restaurantId;
+    private Restaurant restaurant;
+
+    public MealDto() {
+    }
 
     public long getId() {
         return id;
@@ -44,11 +47,11 @@ public class MealDto {
         this.price = price;
     }
 
-    public long getRestaurantId() {
-        return restaurantId;
+    public Restaurant getRestaurant() {
+        return restaurant;
     }
 
-    public void setRestaurantId(long restaurantId) {
-        this.restaurantId = restaurantId;
+    public void setRestaurant(Restaurant restaurant) {
+        this.restaurant = restaurant;
     }
 }

@@ -3,6 +3,7 @@ package com.sar.ws.ui.controller;
 import com.sar.ws.exceptions.UserServiceException;
 import com.sar.ws.service.MealService;
 import com.sar.ws.shared.dto.MealDto;
+import com.sar.ws.shared.dto.MealView;
 import com.sar.ws.ui.model.request.MealDetailsRequestModel;
 import com.sar.ws.ui.model.response.ErrorMessages;
 import com.sar.ws.ui.model.response.OperatioStatusModel;
@@ -39,9 +40,10 @@ public class MealController {
     }
 
     //проверить во всех котролеерах на long/Long
+    //https://www.baeldung.com/spring-data-jpa-projections
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public MealDto get(@PathVariable long id) {
-        return mealService.get(id);
+    public MealView get(@PathVariable long id) {
+        return mealService.getById(id);
     }
 
     @PutMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -64,13 +66,14 @@ public class MealController {
     }
 
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<MealDto> getMeals(@RequestParam(value = "page", defaultValue = "0") int page,
+    public List<MealView> getMeals(@RequestParam(value = "page", defaultValue = "0") int page,
                                   @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
         if (page > 0) {
             page = page - 1;
         }
 
-        return mealService.getMeals(page, limit);
+        List<MealView> returnValue = mealService.getMeals(page, limit);
+        return returnValue;
     }
 }

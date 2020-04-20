@@ -1,14 +1,17 @@
 package com.sar.ws.io.entity;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.Id;
+import org.hibernate.annotations.LazyToOne;
+import org.hibernate.annotations.LazyToOneOption;
+
+import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
+import java.io.Serializable;
 import java.time.LocalDate;
 
-@Entity(name = "meals")
-public class Meal {
+@Entity
+@Table(name = "meals")
+public class Meal implements Serializable {
+    private static final long serialVersionUID = 8958161162548212632L;
 
     @Id
     @GeneratedValue
@@ -24,12 +27,14 @@ public class Meal {
     @Column(name = "price", nullable = false)
     private Double price;
 
-//    @ManyToOne(targetEntity = Restaurant.class, fetch = FetchType.LAZY)
-//    @JoinColumn(name = "restaurant_id")
-//    @OnDelete(action = OnDeleteAction.CASCADE)
-//    private Restaurant restaurant;
+    //    @OnDelete(action = OnDeleteAction.CASCADE)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "restaurant_id")
+    @LazyToOne(LazyToOneOption.NO_PROXY)
+    private Restaurant restaurant;
 
-    private long restaurantId;
+    public Meal() {
+    }
 
     public long getId() {
         return id;
@@ -63,19 +68,11 @@ public class Meal {
         this.price = price;
     }
 
-  /*  public Restaurant getRestaurant() {
+    public Restaurant getRestaurant() {
         return restaurant;
     }
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
-    }*/
-
-    public long getRestaurantId() {
-        return restaurantId;
-    }
-
-    public void setRestaurantId(long restaurantId) {
-        this.restaurantId = restaurantId;
     }
 }

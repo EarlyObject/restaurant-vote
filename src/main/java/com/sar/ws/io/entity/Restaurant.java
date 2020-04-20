@@ -5,7 +5,8 @@ import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.List;
 
-@Entity(name = "restaurants")
+@Entity
+@Table(name = "restaurants")
 public class Restaurant implements Serializable {
     private static final long serialVersionUID = -157747531241672180L;
 
@@ -25,9 +26,13 @@ public class Restaurant implements Serializable {
     @NotBlank
     private String phoneNumber;
 
-    @OneToMany(mappedBy = "restaurantId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    //    @OneToMany(mappedBy = "restaurantId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL)
     @OrderBy("date DESC")
     private List<Meal> meals;
+
+    public Restaurant() {
+    }
 
     public long getId() {
         return id;
