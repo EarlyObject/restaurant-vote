@@ -1,6 +1,6 @@
 package com.sar.ws.ui.model.response;
 
-public class OperatioStatusModel {
+public class OperationStatusModel {
     private String operationResult;
     private String operationName;
 

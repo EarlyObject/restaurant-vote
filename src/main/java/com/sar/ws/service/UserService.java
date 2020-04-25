@@ -1,6 +1,7 @@
 package com.sar.ws.service;
 
 import com.sar.ws.shared.dto.UserDto;
+import com.sar.ws.shared.view.UserView;
 import org.springframework.security.core.userdetails.UserDetailsService;
 
 import java.util.List;
@@ -10,7 +11,7 @@ public interface UserService extends UserDetailsService {
 
     UserDto getUser(String email);
 
-    UserDto getUserByUserId(String userId);
+    UserView getByUserId(String userId);
 
     UserDto updateUser(String userId, UserDto user);
 

@@ -3,6 +3,7 @@ package com.sar.ws.ui.controller;
 import com.sar.ws.exceptions.UserServiceException;
 import com.sar.ws.service.UserService;
 import com.sar.ws.shared.dto.UserDto;
+import com.sar.ws.shared.view.UserView;
 import com.sar.ws.ui.model.request.UserDetailsRequestModel;
 import com.sar.ws.ui.model.response.*;
 import org.springframework.beans.BeanUtils;
@@ -49,13 +50,8 @@ public class UserController {
 
     @PostAuthorize("hasRole('ADMIN') or returnObject.userId == principal.userId")
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserRest getUser(@PathVariable String id) {
-        UserRest returnValue = new UserRest();
-
-        UserDto userDto = userService.getUserByUserId(id);
-        BeanUtils.copyProperties(userDto, returnValue);
-
-        return returnValue;
+    public UserView getUser(@PathVariable String id) {
+        return userService.getByUserId(id);
     }
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
@@ -74,8 +70,8 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
     @DeleteMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public OperatioStatusModel deleteUser(@PathVariable String id) {
-        OperatioStatusModel returnValue = new OperatioStatusModel();
+    public OperationStatusModel deleteUser(@PathVariable String id) {
+        OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
 
         userService.deleteUser(id);

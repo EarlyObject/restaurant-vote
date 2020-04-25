@@ -9,6 +9,7 @@ import com.sar.ws.security.UserPrincipal;
 import com.sar.ws.service.UserService;
 import com.sar.ws.shared.dto.UserDto;
 import com.sar.ws.shared.utils.Utils;
+import com.sar.ws.shared.view.UserView;
 import com.sar.ws.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,10 +21,7 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.List;
+import java.util.*;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -64,7 +62,6 @@ public class UserServiceImpl implements UserService {
 
         userEntity.setRoles(roleEntities);
 
-
         UserEntity storedUserDetails = userRepository.save(userEntity);
         UserDto returnValue = new UserDto();
         BeanUtils.copyProperties(storedUserDetails, returnValue);
@@ -97,16 +94,12 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public UserDto getUserByUserId(String userId) {
-        UserDto returnValue = new UserDto();
-        UserEntity userEntity = userRepository.findByUserId(userId);
-
-        if (userEntity == null) {
-            throw new UsernameNotFoundException("User with ID: " + userId + " not found");
+    public UserView getByUserId(String userId) {
+        Optional<UserView> userViewOptional = userRepository.getByUserId(userId);
+        if (!userViewOptional.isPresent()) {
+            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
-        BeanUtils.copyProperties(userEntity, returnValue);
-
-        return returnValue;
+        return userViewOptional.get();
     }
 
     @Override
