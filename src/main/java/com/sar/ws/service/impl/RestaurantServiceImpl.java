@@ -1,10 +1,13 @@
 package com.sar.ws.service.impl;
 
+import com.sar.ws.exceptions.MealServiceException;
 import com.sar.ws.exceptions.RestaurantServiceException;
 import com.sar.ws.io.entity.Restaurant;
 import com.sar.ws.io.repositories.RestaurantRepository;
 import com.sar.ws.service.RestaurantService;
 import com.sar.ws.shared.dto.RestaurantDto;
+import com.sar.ws.shared.view.RestaurantView;
+import com.sar.ws.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -12,7 +15,6 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -40,52 +42,12 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public RestaurantDto getById(Long id) {
-
-        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
-
-        //Здесь надо сделать проверку на обязательные поля либо через Validation либо через перебор поле
-        if (!restaurantOptional.isPresent()) {
-            throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
+    public RestaurantView getById(Long id) {
+        Optional<RestaurantView> restaurantViewOptional = restaurantRepository.getById(id);
+        if (!restaurantViewOptional.isPresent()) {
+            throw new RestaurantServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
-        Restaurant restaurant = restaurantOptional.get();
-
-        RestaurantDto restaurantDto = new RestaurantDto();
-        restaurantDto.setId(restaurant.getId());
-        restaurantDto.setName(restaurant.getName());
-        restaurantDto.setAddress(restaurant.getAddress());
-        restaurantDto.setPhoneNumber(restaurant.getPhoneNumber());
-
-
-  /*      ModelMapper modelMapper = new ModelMapper();
-        modelMapper.getConfiguration().setMatchingStrategy(MatchingStrategies.LOOSE);
-
-
-        modelMapper.typeMap(Meal.class, MealDto.class).addMappings(mapper -> {
-            mapper.map(src->src.getRestaurant().getId(),
-                    MealDto::setRestaurantId);
-
-           *//* mapper.map(src -> src.getBillingAddress().getCity(),
-                    Destination::setBillingCity);*//*
-        });
-        RestaurantDto restaurantDto = modelMapper.map(restaurant, RestaurantDto.class);*/
-
-
-       /*
-        List<MealDto> mealDtos = new ArrayList<>();
-        for (Meal meal : restaurant.getMeals()) {
-            MealDto mealDto = new MealDto();
-            mealDto.setId(meal.getId());
-            mealDto.setRestaurantId(restaurant.getId());
-            mealDto.setDate(meal.getDate());
-            mealDto.setDescription(meal.getDescription());
-            mealDto.setPrice(meal.getPrice());
-
-            mealDtos.add(mealDto);
-        }
-        restaurantDto.setMeals(mealDtos);*/
-
-        return restaurantDto;
+        return restaurantViewOptional.get();
     }
 
     @Override
@@ -94,23 +56,15 @@ public class RestaurantServiceImpl implements RestaurantService {
 
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
 
-     /*  restaurantRepository.findById(id)
-               .filter(restaurant->restaurant.getMeals()
-               .forEach(meal-> meal.getDate().isEqual(LocalDate.of(2020, 4, 2))));
-
-*/
         if (!restaurantOptional.isPresent()) {
             throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
         }
 
         Restaurant restaurant = restaurantOptional.get();
-        restaurant.setName(restaurantDto.getName());
-        restaurant.setAddress(restaurantDto.getAddress());
-        restaurant.setPhoneNumber(restaurantDto.getPhoneNumber());
-
+        BeanUtils.copyProperties(restaurantDto, restaurant, "id");
         Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
-        BeanUtils.copyProperties(updatedRestaurant, returnValue);
 
+        BeanUtils.copyProperties(updatedRestaurant, returnValue);
         return returnValue;
     }
 
@@ -125,22 +79,9 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public List<RestaurantDto> getRestaurants(int page, int limit) {
-        List<RestaurantDto> returnValue = new ArrayList<>();
-
+    public List<RestaurantView> getAll(int page, int limit) {
         Pageable pageableRequest = PageRequest.of(page, limit);
-        Page<Restaurant> restaurantPage = restaurantRepository.findAll(pageableRequest);
-        List<Restaurant> restaurants = restaurantPage.getContent();
-
-        for (Restaurant restaurant : restaurants) {
-            RestaurantDto restaurantDto = new RestaurantDto();
-            restaurantDto.setId(restaurant.getId());
-            restaurantDto.setName(restaurant.getName());
-            restaurantDto.setAddress(restaurant.getAddress());
-            restaurantDto.setPhoneNumber(restaurant.getPhoneNumber());
-
-            returnValue.add(restaurantDto);
-        }
-        return returnValue;
+        Page<RestaurantView> restaurantViews = restaurantRepository.getAllBy(pageableRequest);
+        return restaurantViews.toList();
     }
 }

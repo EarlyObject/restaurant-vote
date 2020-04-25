@@ -1,18 +1,15 @@
 package com.sar.ws.ui.controller;
 
-import com.sar.ws.io.entity.Restaurant;
-import com.sar.ws.io.repositories.RestaurantRepository;
 import com.sar.ws.service.RestaurantService;
 import com.sar.ws.shared.dto.RestaurantDto;
+import com.sar.ws.shared.view.MealView;
+import com.sar.ws.shared.view.RestaurantView;
 import com.sar.ws.ui.model.request.RestaurantDetailsRequestModel;
-import com.sar.ws.ui.model.response.OperatioStatusModel;
+import com.sar.ws.ui.model.response.OperationStatusModel;
 import com.sar.ws.ui.model.response.RequestOperationName;
 import com.sar.ws.ui.model.response.RequestOperationStatus;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.web.bind.annotation.*;
@@ -26,12 +23,8 @@ public class RestaurantController {
     @Autowired
     RestaurantService restaurantService;
 
-    @Autowired
-    RestaurantRepository restaurantRepository;
-
     @Secured("ROLE_ADMIN")
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public RestaurantDto create(@RequestBody RestaurantDetailsRequestModel restaurantModel) throws Exception {
 
@@ -42,8 +35,7 @@ public class RestaurantController {
     }
 
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestaurantDto get(@PathVariable Long id) throws Exception {
-
+    public RestaurantView get(@PathVariable Long id) throws Exception {
         return restaurantService.getById(id);
     }
 
@@ -59,29 +51,24 @@ public class RestaurantController {
 
     @Secured("ROLE_ADMIN")
     @DeleteMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public OperatioStatusModel delete(@PathVariable Long id) {
-        OperatioStatusModel returnValue = new OperatioStatusModel();
+    public OperationStatusModel delete(@PathVariable Long id) {
+        OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
 
         restaurantService.delete(id);
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
-
         return returnValue;
     }
 
     //consult if get and getAll methods access should be allowed to unregistered users
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<RestaurantDto> getRestaurants(@RequestParam(value = "page", defaultValue = "0") int page,
-                                              @RequestParam(value = "limit", defaultValue = "25") int limit) {
+    public List<RestaurantView> getAll(@RequestParam(value = "page", defaultValue = "0") int page,
+                                       @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
         if (page > 0) {
             page = page - 1;
         }
-
-        Pageable pageableRequest = PageRequest.of(0, 5);
-        Page<Restaurant> restaurantPage = restaurantRepository.findAllWithoutMeals(pageableRequest);
-        List<Restaurant> restaurants = restaurantPage.getContent();
-
-        return restaurantService.getRestaurants(page, limit);
+        List<RestaurantView> returnValue = restaurantService.getAll(page, limit);
+        return returnValue;
     }
 }
