@@ -1,4 +1,4 @@
-package com.sar.ws.shared.dto;
+package com.sar.ws.shared.view;
 
 import java.time.LocalDate;
 

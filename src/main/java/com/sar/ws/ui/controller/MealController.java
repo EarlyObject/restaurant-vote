@@ -3,14 +3,15 @@ package com.sar.ws.ui.controller;
 import com.sar.ws.exceptions.UserServiceException;
 import com.sar.ws.service.MealService;
 import com.sar.ws.shared.dto.MealDto;
-import com.sar.ws.shared.dto.MealView;
+import com.sar.ws.shared.view.MealView;
 import com.sar.ws.ui.model.request.MealDetailsRequestModel;
 import com.sar.ws.ui.model.response.ErrorMessages;
-import com.sar.ws.ui.model.response.OperatioStatusModel;
+import com.sar.ws.ui.model.response.OperationStatusModel;
 import com.sar.ws.ui.model.response.RequestOperationName;
 import com.sar.ws.ui.model.response.RequestOperationStatus;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.http.MediaType;
 import org.springframework.web.bind.annotation.*;
 
@@ -23,8 +24,11 @@ public class MealController {
     @Autowired
     MealService mealService;
 
-    @PostMapping(
-            consumes = MediaType.APPLICATION_JSON_VALUE,
+    //check if you need it
+    @Autowired
+    ConversionService conversionService;
+
+    @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
     public MealDto create(@RequestBody MealDetailsRequestModel mealDetails) throws UserServiceException {
 
@@ -35,11 +39,9 @@ public class MealController {
 
         MealDto mealDto = new MealDto();
         BeanUtils.copyProperties(mealDetails, mealDto);
-
-        return mealService.create(mealDto);
+        return mealService.create(mealDto, mealDetails.getRestaurantId());
     }
 
-    //проверить во всех котролеерах на long/Long
     //https://www.baeldung.com/spring-data-jpa-projections
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
     public MealView get(@PathVariable long id) {
@@ -50,18 +52,16 @@ public class MealController {
     public MealDto update(@PathVariable long id, @RequestBody MealDetailsRequestModel mealDetails) {
         MealDto mealDto = new MealDto();
         BeanUtils.copyProperties(mealDetails, mealDto);
-
-        return mealService.update(id, mealDto);
+        return mealService.update(id, mealDto, mealDetails.getRestaurantId());
     }
 
     @DeleteMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public OperatioStatusModel delete(@PathVariable long id) {
-        OperatioStatusModel returnValue = new OperatioStatusModel();
+    public OperationStatusModel delete(@PathVariable long id) {
+        OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
 
         mealService.delete(id);
         returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
-
         return returnValue;
     }
 
@@ -73,7 +73,7 @@ public class MealController {
             page = page - 1;
         }
 
-        List<MealView> returnValue = mealService.getMeals(page, limit);
+        List<MealView> returnValue = mealService.getAll(page, limit);
         return returnValue;
     }
 }

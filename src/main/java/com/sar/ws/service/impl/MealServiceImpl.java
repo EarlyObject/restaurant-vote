@@ -1,12 +1,15 @@
 package com.sar.ws.service.impl;
 
 import com.sar.ws.exceptions.MealServiceException;
+import com.sar.ws.exceptions.RestaurantServiceException;
 import com.sar.ws.io.entity.Meal;
+import com.sar.ws.io.entity.Restaurant;
 import com.sar.ws.io.repositories.MealRepository;
 import com.sar.ws.io.repositories.RestaurantRepository;
 import com.sar.ws.service.MealService;
 import com.sar.ws.shared.dto.MealDto;
-import com.sar.ws.shared.dto.MealView;
+import com.sar.ws.shared.view.MealView;
+import com.sar.ws.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -27,53 +30,51 @@ public class MealServiceImpl implements MealService {
     RestaurantRepository restaurantRepository;
 
     @Override
-    public MealDto create(MealDto mealDto) {
+    public MealDto create(MealDto mealDto, long restaurantId) {
 
-      /*  if (mealRepository.findById(mealDto.g).findUserByEmail(user.getEmail()) != null) {
-            throw new RuntimeException("Record already exists");
-        }*/
+        Optional<Restaurant> restaurant = restaurantRepository.findById(restaurantId);
+        if (!restaurant.isPresent()) {
+            throw new RestaurantServiceException("Restaurant with ID: " + restaurantId + " not found");
+        }
 
         Meal meal = new Meal();
         BeanUtils.copyProperties(mealDto, meal);
-      /*  Optional<Restaurant> restaurant = restaurantRepository.findById(mealDto.getRestaurantId());
-        if (!restaurant.isPresent()) {
-            throw new RestaurantServiceException("Restaurant with ID: " + mealDto.getRestaurantId() + " not found");
-        }*/
-//        meal.setRestaurant(restaurant.get());
+        meal.setRestaurant(restaurant.get());
 
         Meal savedMeal = mealRepository.save(meal);
-        MealDto returnValue = new MealDto();
-        BeanUtils.copyProperties(savedMeal, returnValue);
-//        returnValue.setRestaurantId(savedMeal.getRestaurant().getId());
-        return returnValue;
+        BeanUtils.copyProperties(savedMeal, mealDto);
+
+        return mealDto;
     }
 
     @Override
     public MealView getById(long id) {
-        return mealRepository.getById(id);
+        Optional<MealView> mealViewOptional = mealRepository.getById(id);
+        if (!mealViewOptional.isPresent()) {
+            throw new MealServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+        }
+        return mealViewOptional.get();
     }
 
     @Override
-    public MealDto update(long id, MealDto mealDto) {
-        MealDto returnValue = new MealDto();
+    public MealDto update(long id, MealDto mealDto, long restaurantId) {
+
         Optional<Meal> mealOptional = mealRepository.findById(id);
         if (!mealOptional.isPresent()) {
             throw new MealServiceException("Meal with ID: " + id + " not found");
         }
-        Meal meal = mealOptional.get();
-        meal.setDate(mealDto.getDate());
-        meal.setDescription(mealDto.getDescription());
-        meal.setPrice(mealDto.getPrice());
+        Optional<Restaurant> restaurantOptional = restaurantRepository.findById(restaurantId);
+        if (!restaurantOptional.isPresent()) {
+            throw new RestaurantServiceException("Restaurant with ID: " + restaurantId + " not found");
+        }
 
-     /*   Optional<Restaurant> restaurant = restaurantRepository.findById(mealDto.getRestaurantId());
-        if (!restaurant.isPresent()) {
-            throw new RestaurantServiceException("Restaurant with ID: " + mealDto.getRestaurantId() + " not found");
-        }*/
-//        meal.setRestaurant(restaurant.get());
+        Meal meal = mealOptional.get();
+        BeanUtils.copyProperties(mealDto, meal, "id");
+        meal.setRestaurant(restaurantOptional.get());
 
         Meal updatedMeal = mealRepository.save(meal);
+        MealDto returnValue = new MealDto();
         BeanUtils.copyProperties(updatedMeal, returnValue);
-//        returnValue.setRestaurantId(updatedMeal.getRestaurant().getId());
 
         return returnValue;
     }
@@ -89,7 +90,7 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
-    public List<MealView> getMeals(int page, int limit) {
+    public List<MealView> getAll(int page, int limit) {
 
         Pageable pageableRequest = PageRequest.of(page, limit);
         Page<MealView> mealPage = mealRepository.getAllBy(pageableRequest);
