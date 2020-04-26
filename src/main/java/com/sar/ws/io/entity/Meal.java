@@ -28,6 +28,7 @@ public class Meal implements Serializable {
     private Double price;
 
     //    @OnDelete(action = OnDeleteAction.CASCADE)
+    //check LazyToOne
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "restaurant_id")
     @LazyToOne(LazyToOneOption.NO_PROXY)

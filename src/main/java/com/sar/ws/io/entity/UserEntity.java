@@ -3,6 +3,7 @@ package com.sar.ws.io.entity;
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 @Entity(name = "users")
 public class UserEntity implements Serializable {
@@ -38,6 +39,10 @@ public class UserEntity implements Serializable {
             joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
             inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
     private Collection<Role> roles;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    @OrderBy("created DESC")
+    private List<Vote> votes;
 
     public long getId() {
         return id;
@@ -109,5 +114,13 @@ public class UserEntity implements Serializable {
 
     public void setRoles(Collection<Role> roles) {
         this.roles = roles;
+    }
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
     }
 }

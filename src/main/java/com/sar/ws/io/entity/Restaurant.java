@@ -31,6 +31,10 @@ public class Restaurant implements Serializable {
     @OrderBy("date DESC")
     private List<Meal> meals;
 
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @OrderBy("created DESC")
+    private List<Vote> votes;
+
     public Restaurant() {
     }
 
@@ -72,5 +76,17 @@ public class Restaurant implements Serializable {
 
     public void setMeals(List<Meal> meals) {
         this.meals = meals;
+    }
+
+    public List<Vote> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<Vote> votes) {
+        this.votes = votes;
+    }
+
+    public Integer getVotesCount() {
+        return votes.size();
     }
 }

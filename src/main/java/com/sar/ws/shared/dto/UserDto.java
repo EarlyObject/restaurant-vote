@@ -4,6 +4,7 @@ import com.sar.ws.io.entity.Role;
 
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.List;
 
 public class UserDto implements Serializable {
     private static final long serialVersionUID = -7050300058832249514L;
@@ -17,6 +18,7 @@ public class UserDto implements Serializable {
     private String emailVerificationToken;
     private Boolean emailVerificationStatus = false;
     private Collection<String> roles;
+    private List<VoteDto> votes;
 
     public long getId() {
         return id;
@@ -96,5 +98,13 @@ public class UserDto implements Serializable {
 
     public void setRoles(Collection<String> roles) {
         this.roles = roles;
+    }
+
+    public List<VoteDto> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<VoteDto> votes) {
+        this.votes = votes;
     }
 }

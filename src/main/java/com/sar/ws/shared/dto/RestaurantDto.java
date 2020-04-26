@@ -10,6 +10,7 @@ public class RestaurantDto implements Serializable {
     private String address;
     private String phoneNumber;
     private List<MealDto> meals;
+    private List<VoteDto> votes;
 
 
     public long getId() {
@@ -50,5 +51,13 @@ public class RestaurantDto implements Serializable {
 
     public void setMeals(List<MealDto> meals) {
         this.meals = meals;
+    }
+
+    public List<VoteDto> getVotes() {
+        return votes;
+    }
+
+    public void setVotes(List<VoteDto> votes) {
+        this.votes = votes;
     }
 }

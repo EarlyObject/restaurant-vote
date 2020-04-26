@@ -12,4 +12,6 @@ public interface RestaurantView {
     String getPhoneNumber();
 
     List<MealView> getMeals();
+
+    Integer getVotesCount();
 }

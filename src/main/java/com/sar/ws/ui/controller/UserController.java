@@ -1,23 +1,31 @@
 package com.sar.ws.ui.controller;
 
 import com.sar.ws.exceptions.UserServiceException;
+import com.sar.ws.io.entity.Vote;
+import com.sar.ws.io.repositories.RestaurantRepository;
+import com.sar.ws.io.repositories.UserRepository;
+import com.sar.ws.io.repositories.VoteRepository;
 import com.sar.ws.service.UserService;
 import com.sar.ws.shared.dto.UserDto;
+import com.sar.ws.shared.view.MealView;
 import com.sar.ws.shared.view.UserView;
+import com.sar.ws.shared.view.VoteView;
 import com.sar.ws.ui.model.request.UserDetailsRequestModel;
 import com.sar.ws.ui.model.response.*;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.annotation.Secured;
 import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashSet;
-import java.util.List;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.util.*;
 
 import static com.sar.ws.shared.Roles.ROLE_USER;
 
@@ -27,6 +35,15 @@ public class UserController {
 
     @Autowired
     UserService userService;
+
+    @Autowired
+    RestaurantRepository restaurantRepository;
+
+    @Autowired
+    UserRepository userRepository;
+
+    @Autowired
+    VoteRepository voteRepository;
 
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
@@ -98,5 +115,46 @@ public class UserController {
         }
 
         return returnValue;
+    }
+
+    @PostMapping(path = "/{userId}/votes")
+    public OperationStatusModel postVote(@PathVariable String userId, @RequestParam long restaurantId) {
+        LocalDateTime postTime = LocalDateTime.now();
+//        LocalDateTime postTime = LocalDateTime.of(2020, 4, 26, 10,15);
+        OperationStatusModel returnValue = new OperationStatusModel();
+        returnValue.setOperationName(RequestOperationName.VOTE.name());
+
+        long id = userRepository.findByUserId(userId).getId();
+        Vote voteOfDay = voteRepository.findByUserIdAndDate(id, postTime.toLocalDate());
+        if (voteOfDay == null) {
+            Vote vote = new Vote(id, restaurantId, postTime);
+            voteRepository.save(vote);
+        } else {
+            if (postTime.toLocalTime().isAfter(LocalTime.of(11, 00, 00))) {
+                returnValue.setOperationResult(RequestOperationStatus.DENIED.name());
+                return returnValue;
+            } else {
+                voteOfDay.setCreated(postTime);
+                voteOfDay.setRestaurantId(restaurantId);
+                voteRepository.save(voteOfDay);
+            }
+        }
+        returnValue.setOperationResult(RequestOperationStatus.SUCCESS.name());
+        return returnValue;
+    }
+
+    @GetMapping(path = "/{userId}/votes")
+    public List<VoteView> getVotes(@PathVariable String userId,
+                                   @RequestParam(value = "page", defaultValue = "0") int page,
+                                   @RequestParam(value = "limit", defaultValue = "25") int limit) {
+
+        if (page > 0) {
+            page = page - 1;
+        }
+
+        long id = userRepository.findByUserId(userId).getId();
+
+        Pageable pageable = PageRequest.of(page, limit);
+        return voteRepository.getAllByUserId(id, pageable);
     }
 }
