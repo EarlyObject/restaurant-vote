@@ -1,5 +1,7 @@
 package com.sar.ws.shared.view;
 
+import com.sar.ws.io.entity.Meal;
+
 import java.util.List;
 
 public interface RestaurantView {
@@ -11,7 +13,10 @@ public interface RestaurantView {
 
     String getPhoneNumber();
 
-    List<MealView> getMeals();
+//    List<MealView> getMeals();
 
     Integer getVotesCount();
-}
+
+    List<MealView> getTodayMenu();
+
+    }

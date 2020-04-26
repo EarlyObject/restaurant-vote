@@ -3,12 +3,18 @@ package com.sar.ws.io.entity;
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
+import java.time.LocalDate;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Entity
 @Table(name = "restaurants")
 public class Restaurant implements Serializable {
     private static final long serialVersionUID = -157747531241672180L;
+
+//    LocalDate today = LocalDateTime.now().toLocalDate();
+    static LocalDate today = LocalDate.of(2020, 4, 20);
+
 
     @Id
     @GeneratedValue
@@ -72,6 +78,10 @@ public class Restaurant implements Serializable {
 
     public List<Meal> getMeals() {
         return meals;
+      /*  List<Meal> collect = meals.stream()
+                .filter(n -> n.getDate().equals(toda))
+                .collect(Collectors.toList());
+        return collect;*/
     }
 
     public void setMeals(List<Meal> meals) {
@@ -88,5 +98,12 @@ public class Restaurant implements Serializable {
 
     public Integer getVotesCount() {
         return votes.size();
+    }
+
+    public List<Meal> getTodayMenu(){
+        List<Meal> collect = meals.stream()
+                .filter(n -> n.getDate().equals(today))
+                .collect(Collectors.toList());
+        return collect;
     }
 }
