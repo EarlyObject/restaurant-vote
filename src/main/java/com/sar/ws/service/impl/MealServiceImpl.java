@@ -15,8 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -98,5 +101,20 @@ public class MealServiceImpl implements MealService {
         return mealPage.getContent();
     }
 
+    @Override
+    public List<MealView> getFiltered(long restaurantId, @Nullable LocalDate start, @Nullable LocalDate end, Pageable pageable) {
+        List<MealView> returnValue;
 
+        if (start == null && end == null) {
+            returnValue = mealRepository.getByRestaurantId(restaurantId, pageable);
+        } else if (start == null) {
+            returnValue = mealRepository.getByRestaurantIdAndDateIsBefore(restaurantId, end, pageable);
+        } else if (end == null) {
+            returnValue = mealRepository.getByRestaurantIdAndDateIsAfter(restaurantId, start, pageable);
+        } else {
+            returnValue = mealRepository.getByRestaurantIdAndDateIsBetween(restaurantId, start, end, pageable);
+        }
+
+        return returnValue;
+    }
 }

@@ -103,9 +103,7 @@ public class UserController {
                                    @RequestParam(value = "limit", defaultValue = "25") int limit) {
         List<UserRest> returnValue = new ArrayList<>();
 
-        if (page > 0) {
-            page = page - 1;
-        }
+        if (page > 0) page = page - 1;
 
         List<UserDto> users = userService.getUsers(page, limit);
         for (UserDto userDto : users) {
@@ -148,9 +146,7 @@ public class UserController {
                                    @RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
-        if (page > 0) {
-            page = page - 1;
-        }
+        if (page > 0) page = page - 1;
 
         long id = userRepository.findByUserId(userId).getId();
 

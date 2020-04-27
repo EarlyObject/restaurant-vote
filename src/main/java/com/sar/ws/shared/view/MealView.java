@@ -10,4 +10,6 @@ public interface MealView {
     String getDescription();
 
     Double getPrice();
+
+    long getRestaurantId();
 }

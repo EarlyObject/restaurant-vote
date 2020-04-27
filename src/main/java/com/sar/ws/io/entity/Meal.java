@@ -29,10 +29,13 @@ public class Meal implements Serializable {
 
     //    @OnDelete(action = OnDeleteAction.CASCADE)
     //check LazyToOne
+    @JoinColumn(name = "restaurant_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "restaurant_id")
-    @LazyToOne(LazyToOneOption.NO_PROXY)
+//    @LazyToOne(LazyToOneOption.NO_PROXY)
     private Restaurant restaurant;
+
+    @Column(name = "restaurant_id")
+    private long restaurantId;
 
     public Meal() {
     }
@@ -75,5 +78,13 @@ public class Meal implements Serializable {
 
     public void setRestaurant(Restaurant restaurant) {
         this.restaurant = restaurant;
+    }
+
+    public long getRestaurantId() {
+        return restaurantId;
+    }
+
+    public void setRestaurantId(long restaurantId) {
+        this.restaurantId = restaurantId;
     }
 }

@@ -8,15 +8,23 @@ import org.springframework.data.repository.PagingAndSortingRepository;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDate;
+import java.util.List;
 import java.util.Optional;
 
+@Transactional(readOnly = true)
 @Repository
 public interface MealRepository extends PagingAndSortingRepository<Meal, Long> {
 
-    @Transactional(readOnly = true)
     Optional<MealView> getById(long id);
 
-
-    @Transactional(readOnly = true)
     Page<MealView> getAllBy(Pageable pageable);
+
+    List<MealView> getByRestaurantId(long restaurantId, Pageable pageable);
+
+    List<MealView> getByRestaurantIdAndDateIsBetween(long restaurantId, LocalDate start, LocalDate end, Pageable pageable);
+
+    List<MealView> getByRestaurantIdAndDateIsBefore(long restaurantId, LocalDate end, Pageable pageable);
+
+    List<MealView> getByRestaurantIdAndDateIsAfter(long restaurantId, LocalDate start, Pageable pageable);
 }
