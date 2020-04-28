@@ -1,8 +1,5 @@
 package com.sar.ws.io.entity;
 
-import org.hibernate.annotations.LazyToOne;
-import org.hibernate.annotations.LazyToOneOption;
-
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
@@ -11,6 +8,7 @@ import java.time.LocalDate;
 @Entity
 @Table(name = "meals")
 public class Meal implements Serializable {
+
     private static final long serialVersionUID = 8958161162548212632L;
 
     @Id
@@ -27,11 +25,8 @@ public class Meal implements Serializable {
     @Column(name = "price", nullable = false)
     private Double price;
 
-    //    @OnDelete(action = OnDeleteAction.CASCADE)
-    //check LazyToOne
     @JoinColumn(name = "restaurant_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
-//    @LazyToOne(LazyToOneOption.NO_PROXY)
     private Restaurant restaurant;
 
     @Column(name = "restaurant_id")

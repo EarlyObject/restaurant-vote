@@ -13,6 +13,7 @@ import java.util.HashSet;
 
 @Service
 public class UserPrincipal implements UserDetails {
+
     private static final long serialVersionUID = 7697357093063978082L;
 
     private UserEntity userEntity;

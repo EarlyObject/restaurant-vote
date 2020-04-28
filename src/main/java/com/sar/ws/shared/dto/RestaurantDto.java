@@ -8,10 +8,6 @@ public class RestaurantDto implements Serializable {
     private long id;
     private String name;
     private String address;
-    private String phoneNumber;
-    private List<MealDto> meals;
-    private List<VoteDto> votes;
-
 
     public long getId() {
         return id;
@@ -35,29 +31,5 @@ public class RestaurantDto implements Serializable {
 
     public void setAddress(String address) {
         this.address = address;
-    }
-
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
-    public List<MealDto> getMeals() {
-        return meals;
-    }
-
-    public void setMeals(List<MealDto> meals) {
-        this.meals = meals;
-    }
-
-    public List<VoteDto> getVotes() {
-        return votes;
-    }
-
-    public void setVotes(List<VoteDto> votes) {
-        this.votes = votes;
     }
 }

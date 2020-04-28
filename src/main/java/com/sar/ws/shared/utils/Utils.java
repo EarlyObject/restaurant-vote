@@ -5,17 +5,13 @@ import org.springframework.stereotype.Component;
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Random;
-import java.util.stream.IntStream;
 
 @Component
 public class Utils {
 
-    private LocalDate currentDate = LocalDate.of(2020, 4, 2);
-
-    public LocalDate getCurrentDate() {
-        return currentDate;
+    public static LocalDate getCurrentDate() {
+        return LocalDate.now();
     }
-
 
     private final Random RANDOM = new SecureRandom();
 

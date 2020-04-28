@@ -3,6 +3,7 @@ package com.sar.ws.ui.model.response;
 import java.util.Date;
 
 public class ErrorMessage {
+
     private Date timeStamp;
     private String message;
 

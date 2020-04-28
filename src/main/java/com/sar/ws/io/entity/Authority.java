@@ -7,6 +7,7 @@ import java.util.Collection;
 @Entity
 @Table(name = "authorities")
 public class Authority implements Serializable {
+
     private static final long serialVersionUID = 8404771510476022431L;
 
     @Id

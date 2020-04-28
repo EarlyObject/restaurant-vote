@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto user) {
 
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            throw new RuntimeException("Record already exists");
+            throw new RuntimeException("Email already registered");
         }
 
         UserEntity userEntity = new UserEntity();

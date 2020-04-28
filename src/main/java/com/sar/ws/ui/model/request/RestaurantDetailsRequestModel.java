@@ -1,10 +1,10 @@
 package com.sar.ws.ui.model.request;
 
 public class RestaurantDetailsRequestModel {
+
     private String name;
     private String address;
     private String phoneNumber;
-
 
     public String getName() {
         return name;

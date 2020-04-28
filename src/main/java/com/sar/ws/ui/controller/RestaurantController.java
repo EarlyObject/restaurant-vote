@@ -1,11 +1,10 @@
 package com.sar.ws.ui.controller;
 
-import com.sar.ws.io.repositories.MealRepository;
 import com.sar.ws.service.MealService;
 import com.sar.ws.service.RestaurantService;
 import com.sar.ws.shared.dto.RestaurantDto;
+import com.sar.ws.shared.view.JPAProjection;
 import com.sar.ws.shared.view.MealView;
-import com.sar.ws.shared.view.RestaurantView;
 import com.sar.ws.ui.model.request.RestaurantDetailsRequestModel;
 import com.sar.ws.ui.model.response.OperationStatusModel;
 import com.sar.ws.ui.model.response.RequestOperationName;
@@ -21,6 +20,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/restaurants") //http://localhost:8080/restaurant-vote/restaurants
@@ -44,8 +44,9 @@ public class RestaurantController {
     }
 
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestaurantView get(@PathVariable Long id) throws Exception {
-        return restaurantService.getById(id);
+    public <T extends JPAProjection> T get(@PathVariable Long id,
+                                           @RequestParam Optional<Boolean> loadAll) throws Exception {
+        return restaurantService.getById(id, loadAll.orElse(false));
     }
 
     @GetMapping(path = {"/{id}/filter"}, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -85,13 +86,14 @@ public class RestaurantController {
 
     //consult if get and getAll methods access should be allowed to unregistered users
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<RestaurantView> getAll(@RequestParam(value = "page", defaultValue = "0") int page,
-                                       @RequestParam(value = "limit", defaultValue = "25") int limit) {
+    public List<? extends JPAProjection> getAll(@RequestParam(value = "page", defaultValue = "0") int page,
+                                                @RequestParam(value = "limit", defaultValue = "25") int limit,
+                                                @RequestParam Optional<Boolean> loadAll) {
 
-        if (page > 0) {
-            page = page - 1;
-        }
-        List<RestaurantView> returnValue = restaurantService.getAll(page, limit);
+        if (page > 0) page = page - 1;
+
+        List<? extends JPAProjection> returnValue = restaurantService.getAll(page, limit,
+                loadAll.orElse(false));
         return returnValue;
     }
 }

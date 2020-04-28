@@ -2,12 +2,7 @@ package com.sar.ws.shared.dto;
 
 import com.sar.ws.io.entity.Restaurant;
 import com.sar.ws.io.entity.UserEntity;
-import org.hibernate.annotations.OnDelete;
-import org.hibernate.annotations.OnDeleteAction;
 
-import javax.persistence.Column;
-import javax.persistence.FetchType;
-import javax.persistence.ManyToOne;
 import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;

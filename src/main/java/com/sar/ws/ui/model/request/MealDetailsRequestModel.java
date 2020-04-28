@@ -4,7 +4,6 @@ import java.time.LocalDate;
 
 public class MealDetailsRequestModel {
 
-    // Meal data
     private LocalDate date;
     private String description;
     private Double price;

@@ -19,7 +19,6 @@ import org.springframework.lang.Nullable;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -42,7 +41,7 @@ public class MealServiceImpl implements MealService {
 
         Meal meal = new Meal();
         BeanUtils.copyProperties(mealDto, meal);
-        meal.setRestaurant(restaurant.get());
+        meal.setRestaurantId(restaurantId);
 
         Meal savedMeal = mealRepository.save(meal);
         BeanUtils.copyProperties(savedMeal, mealDto);
@@ -73,7 +72,7 @@ public class MealServiceImpl implements MealService {
 
         Meal meal = mealOptional.get();
         BeanUtils.copyProperties(mealDto, meal, "id");
-        meal.setRestaurant(restaurantOptional.get());
+        meal.setRestaurantId(restaurantId);
 
         Meal updatedMeal = mealRepository.save(meal);
         MealDto returnValue = new MealDto();

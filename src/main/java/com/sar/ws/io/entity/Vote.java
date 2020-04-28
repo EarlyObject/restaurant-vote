@@ -11,6 +11,7 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "votes")
 public class Vote implements Serializable {
+
     private static final long serialVersionUID = 1157392787989018975L;
 
     @Id

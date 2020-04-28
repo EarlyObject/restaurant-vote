@@ -1,8 +1,6 @@
 package com.sar.ws.ui.controller;
 
 import com.sar.ws.exceptions.UserServiceException;
-import com.sar.ws.io.repositories.RestaurantRepository;
-import com.sar.ws.io.repositories.UserRepository;
 import com.sar.ws.service.UserService;
 import com.sar.ws.service.VoteService;
 import com.sar.ws.shared.dto.UserDto;
@@ -108,14 +106,15 @@ public class UserController {
         return returnValue;
     }
 
+    @PreAuthorize("#userId == principal.userId")
     @PostMapping(path = "/{userId}/votes")
     public OperationStatusModel postVote(@PathVariable String userId, @RequestParam long restaurantId) {
         LocalDateTime postTime = LocalDateTime.now();
-//        LocalDateTime postTime = LocalDateTime.of(2020, 4, 26, 10,15);
 
         return voteService.create(userId, restaurantId, postTime);
     }
 
+    @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.userId")
     @GetMapping(path = "/{userId}/votes")
     public List<VoteView> getVotes(@PathVariable String userId,
                                    @RequestParam(value = "page", defaultValue = "0") int page,

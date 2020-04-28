@@ -1,20 +1,20 @@
 package com.sar.ws.io.entity;
 
+import org.hibernate.annotations.Formula;
+import org.hibernate.annotations.LazyCollection;
+import org.hibernate.annotations.LazyCollectionOption;
+
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Set;
 
 @Entity
 @Table(name = "restaurants")
 public class Restaurant implements Serializable {
+
     private static final long serialVersionUID = -157747531241672180L;
-
-//    LocalDate today = LocalDateTime.now().toLocalDate();
-    static LocalDate today = LocalDate.of(2020, 4, 20);
-
 
     @Id
     @GeneratedValue
@@ -28,18 +28,17 @@ public class Restaurant implements Serializable {
     @NotBlank
     private String address;
 
-    @Column(nullable = false)
-    @NotBlank
-    private String phoneNumber;
-
-    //    @OneToMany(mappedBy = "restaurantId", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("date DESC")
     private List<Meal> meals;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "restaurant", cascade = CascadeType.ALL)
+    @LazyCollection(LazyCollectionOption.EXTRA)
+    @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("created DESC")
-    private List<Vote> votes;
+    private Set<Vote> votes;
+
+    @Formula("select count(*) from votes v where v.restaurant_id = id")
+    private int votesCount;
 
     public Restaurant() {
     }
@@ -68,31 +67,19 @@ public class Restaurant implements Serializable {
         this.address = address;
     }
 
-    public String getPhoneNumber() {
-        return phoneNumber;
-    }
-
-    public void setPhoneNumber(String phoneNumber) {
-        this.phoneNumber = phoneNumber;
-    }
-
     public List<Meal> getMeals() {
         return meals;
-      /*  List<Meal> collect = meals.stream()
-                .filter(n -> n.getDate().equals(toda))
-                .collect(Collectors.toList());
-        return collect;*/
     }
 
     public void setMeals(List<Meal> meals) {
         this.meals = meals;
     }
 
-    public List<Vote> getVotes() {
+    public Set<Vote> getVotes() {
         return votes;
     }
 
-    public void setVotes(List<Vote> votes) {
+    public void setVotes(Set<Vote> votes) {
         this.votes = votes;
     }
 
@@ -100,10 +87,7 @@ public class Restaurant implements Serializable {
         return votes.size();
     }
 
-    public List<Meal> getTodayMenu(){
-        List<Meal> collect = meals.stream()
-                .filter(n -> n.getDate().equals(today))
-                .collect(Collectors.toList());
-        return collect;
+    public void setVotesCount(int votesCount) {
+        this.votesCount = votesCount;
     }
 }

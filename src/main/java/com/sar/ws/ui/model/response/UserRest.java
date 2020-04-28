@@ -1,6 +1,7 @@
 package com.sar.ws.ui.model.response;
 
 public class UserRest {
+
     private String userId;
     private String firstName;
     private String lastName;

@@ -7,6 +7,7 @@ import java.util.List;
 
 @Entity(name = "users")
 public class UserEntity implements Serializable {
+
     private static final long serialVersionUID = 4746861687784182986L;
 
     @Id
@@ -40,7 +41,7 @@ public class UserEntity implements Serializable {
             inverseJoinColumns = @JoinColumn(name = "roles_id", referencedColumnName = "id"))
     private Collection<Role> roles;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL)
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("created DESC")
     private List<Vote> votes;
 

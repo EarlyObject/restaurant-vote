@@ -1,22 +1,21 @@
 package com.sar.ws.service.impl;
 
-import com.sar.ws.exceptions.MealServiceException;
 import com.sar.ws.exceptions.RestaurantServiceException;
 import com.sar.ws.io.entity.Restaurant;
 import com.sar.ws.io.repositories.RestaurantRepository;
 import com.sar.ws.service.RestaurantService;
 import com.sar.ws.shared.dto.RestaurantDto;
-import com.sar.ws.shared.view.RestaurantView;
-import com.sar.ws.ui.model.response.ErrorMessages;
+import com.sar.ws.shared.view.JPAProjection;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
+
+import static com.sar.ws.shared.utils.Utils.getCurrentDate;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
@@ -42,12 +41,18 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public RestaurantView getById(Long id) {
-        Optional<RestaurantView> restaurantViewOptional = restaurantRepository.getById(id);
-        if (!restaurantViewOptional.isPresent()) {
-            throw new RestaurantServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+    public JPAProjection getById(Long id, boolean loadAll) {
+        Optional<? extends JPAProjection> returnValue;
+        if (loadAll) {
+            returnValue = restaurantRepository.getById(id, getCurrentDate());
+        } else {
+            returnValue = restaurantRepository.getAdminRestaurantViewById(id);
         }
-        return restaurantViewOptional.get();
+        if (returnValue.isPresent()) {
+            return returnValue.get();
+        } else {
+            throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
+        }
     }
 
     @Override
@@ -79,9 +84,16 @@ public class RestaurantServiceImpl implements RestaurantService {
     }
 
     @Override
-    public List<RestaurantView> getAll(int page, int limit) {
+    public List<? extends JPAProjection> getAll(int page, int limit, boolean loadAll) {
         Pageable pageableRequest = PageRequest.of(page, limit);
-        Page<RestaurantView> restaurantViews = restaurantRepository.getAllBy(pageableRequest);
-        return restaurantViews.toList();
+        List<? extends JPAProjection> restaurantViews;
+        if (loadAll) {
+            restaurantViews = restaurantRepository.getAllWithMealsAndVotes(getCurrentDate(),
+                    pageableRequest);
+        } else {
+            restaurantViews = restaurantRepository.getAllBy();
+        }
+
+        return restaurantViews;
     }
 }

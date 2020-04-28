@@ -1,8 +1,8 @@
 package com.sar.ws.io.repositories;
 
 import com.sar.ws.io.entity.Restaurant;
+import com.sar.ws.shared.view.AdminRestaurantView;
 import com.sar.ws.shared.view.RestaurantView;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.PagingAndSortingRepository;
@@ -13,16 +13,17 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional(readOnly = true)
 @Repository
 public interface RestaurantRepository extends PagingAndSortingRepository<Restaurant, Long> {
 
+    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.meals m WHERE r.id=?1 AND m.date=?2")
+    Optional<RestaurantView> getById(long id, LocalDate date);
 
-    @Query("select r from Restaurant r join fetch r.meals")
-    List<Restaurant> findAllWithMeals();
+    Optional<AdminRestaurantView> getAdminRestaurantViewById(long id);
 
-    @Transactional(readOnly = true)
-    Optional<RestaurantView> getById(long id);
+    @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.meals m WHERE m.date=?1")
+    List<RestaurantView> getAllWithMealsAndVotes(LocalDate date, Pageable pageable);
 
-    @Transactional(readOnly = true)
-    Page<RestaurantView> getAllBy(Pageable pageable);
+    List<AdminRestaurantView> getAllBy();
 }
