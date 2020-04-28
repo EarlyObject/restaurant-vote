@@ -30,10 +30,14 @@ public class UserEntity implements Serializable {
     @Column(nullable = false)
     private String encryptedPassword;
 
-    private String emailVerificationToken;
-
+    /**
+     * by Ardak Sydyknazar:
+     * this Boolean value should be set to false by default,
+     * but because our project does not require much complication,
+     * I set it to false and do not implement email verification in this project
+     */
     @Column(nullable = false)
-    private Boolean emailVerificationStatus = false;
+    private Boolean emailVerificationStatus = true;
 
     @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
@@ -91,14 +95,6 @@ public class UserEntity implements Serializable {
 
     public void setEncryptedPassword(String encryptedPassword) {
         this.encryptedPassword = encryptedPassword;
-    }
-
-    public String getEmailVerificationToken() {
-        return emailVerificationToken;
-    }
-
-    public void setEmailVerificationToken(String emailVerificationToken) {
-        this.emailVerificationToken = emailVerificationToken;
     }
 
     public Boolean getEmailVerificationStatus() {

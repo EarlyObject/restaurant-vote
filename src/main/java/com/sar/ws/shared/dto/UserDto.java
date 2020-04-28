@@ -1,7 +1,5 @@
 package com.sar.ws.shared.dto;
 
-import com.sar.ws.io.entity.Role;
-
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -16,7 +14,7 @@ public class UserDto implements Serializable {
     private String password;
     private String encryptedPassword;
     private String emailVerificationToken;
-    private Boolean emailVerificationStatus = false;
+    private Boolean emailVerificationStatus = true;
     private Collection<String> roles;
     private List<VoteDto> votes;
 
