@@ -8,7 +8,7 @@ import com.sar.ws.io.repositories.UserRepository;
 import com.sar.ws.security.UserPrincipal;
 import com.sar.ws.service.UserService;
 import com.sar.ws.shared.dto.UserDto;
-import com.sar.ws.shared.utils.Utils;
+import com.sar.ws.shared.dto.Utils;
 import com.sar.ws.shared.view.UserView;
 import com.sar.ws.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
@@ -42,7 +42,7 @@ public class UserServiceImpl implements UserService {
     public UserDto createUser(UserDto user) {
 
         if (userRepository.findByEmail(user.getEmail()) != null) {
-            throw new RuntimeException("Email already registered");
+            throw new UserServiceException("Email already registered");
         }
 
         UserEntity userEntity = new UserEntity();

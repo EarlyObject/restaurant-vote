@@ -1,12 +1,12 @@
-package com.sar.ws.shared.utils;
+package com.sar.ws.shared.dto;
 
-import org.springframework.stereotype.Component;
+import org.springframework.stereotype.Service;
 
 import java.security.SecureRandom;
 import java.time.LocalDate;
 import java.util.Random;
 
-@Component
+@Service
 public class Utils {
 
     public static LocalDate getCurrentDate() {

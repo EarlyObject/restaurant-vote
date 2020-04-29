@@ -7,7 +7,7 @@ import com.sar.ws.io.repositories.AuthorityRepository;
 import com.sar.ws.io.repositories.RoleRepository;
 import com.sar.ws.io.repositories.UserRepository;
 import com.sar.ws.shared.Roles;
-import com.sar.ws.shared.utils.Utils;
+import com.sar.ws.shared.dto.Utils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.context.event.EventListener;

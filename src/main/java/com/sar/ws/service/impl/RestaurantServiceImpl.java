@@ -15,7 +15,7 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 import java.util.Optional;
 
-import static com.sar.ws.shared.utils.Utils.getCurrentDate;
+import static com.sar.ws.shared.dto.Utils.getCurrentDate;
 
 @Service
 public class RestaurantServiceImpl implements RestaurantService {
