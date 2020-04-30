@@ -6,19 +6,12 @@ import org.hibernate.annotations.LazyCollectionOption;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 import java.util.List;
 import java.util.Set;
 
 @Entity
 @Table(name = "restaurants")
-public class Restaurant implements Serializable {
-
-    private static final long serialVersionUID = -157747531241672180L;
-
-    @Id
-    @GeneratedValue
-    private long id;
+public class Restaurant extends AbstractBaseEntity {
 
     @Column(nullable = false)
     @NotBlank
@@ -41,14 +34,6 @@ public class Restaurant implements Serializable {
     private int votesCount;
 
     public Restaurant() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {

@@ -1,18 +1,11 @@
 package com.sar.ws.io.entity;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
 @Table(name = "roles")
-public class Role implements Serializable {
-
-    private static final long serialVersionUID = 154163109519777472L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long id;
+public class Role extends AbstractBaseEntity {
 
     @Column(nullable = false, length = 20)
     private String name;
@@ -31,14 +24,6 @@ public class Role implements Serializable {
 
     public Role(String name) {
         this.name = name;
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {

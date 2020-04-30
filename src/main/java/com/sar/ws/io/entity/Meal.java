@@ -2,18 +2,11 @@ package com.sar.ws.io.entity;
 
 import javax.persistence.*;
 import javax.validation.constraints.NotBlank;
-import java.io.Serializable;
 import java.time.LocalDate;
 
 @Entity
 @Table(name = "meals")
-public class Meal implements Serializable {
-
-    private static final long serialVersionUID = 8958161162548212632L;
-
-    @Id
-    @GeneratedValue
-    private long id;
+public class Meal extends AbstractBaseEntity {
 
     @Column(name = "date", nullable = false)
     private LocalDate date;
@@ -33,14 +26,6 @@ public class Meal implements Serializable {
     private long restaurantId;
 
     public Meal() {
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public LocalDate getDate() {

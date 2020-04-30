@@ -4,13 +4,12 @@ import org.hibernate.annotations.OnDelete;
 import org.hibernate.annotations.OnDeleteAction;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 @Entity
 @Table(name = "votes")
-public class Vote implements Serializable {
+public class Vote extends AbstractBaseEntity {
 
     private static final long serialVersionUID = 1157392787989018975L;
 
@@ -48,14 +47,6 @@ public class Vote implements Serializable {
         this.userId = userId;
         this.restaurantId = restaurantId;
         this.date = created.toLocalDate();
-    }
-
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public LocalDateTime getCreated() {

@@ -1,18 +1,11 @@
 package com.sar.ws.io.entity;
 
 import javax.persistence.*;
-import java.io.Serializable;
 import java.util.Collection;
 
 @Entity
 @Table(name = "authorities")
-public class Authority implements Serializable {
-
-    private static final long serialVersionUID = 8404771510476022431L;
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private long Id;
+public class Authority extends AbstractBaseEntity {
 
     @Column(nullable = false, length = 20)
     private String name;
@@ -25,14 +18,6 @@ public class Authority implements Serializable {
 
     public Authority(String name) {
         this.name = name;
-    }
-
-    public long getId() {
-        return Id;
-    }
-
-    public void setId(long id) {
-        Id = id;
     }
 
     public String getName() {

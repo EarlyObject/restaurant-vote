@@ -6,13 +6,13 @@ import java.util.Collection;
 import java.util.List;
 
 @Entity(name = "users")
-public class UserEntity implements Serializable {
+public class UserEntity extends AbstractBaseEntity implements Serializable {
 
-    private static final long serialVersionUID = 4746861687784182986L;
+//    private static final long serialVersionUID = 4746861687784182986L;
 
-    @Id
+  /*  @Id
     @GeneratedValue
-    private long id;
+    private long id;*/
 
     @Column(nullable = false)
     private String userId;
@@ -49,12 +49,7 @@ public class UserEntity implements Serializable {
     @OrderBy("created DESC")
     private List<Vote> votes;
 
-    public long getId() {
-        return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
+    public UserEntity() {
     }
 
     public String getUserId() {
