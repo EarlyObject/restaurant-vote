@@ -9,10 +9,6 @@ import java.util.Random;
 @Service
 public class Utils {
 
-    public static LocalDate getCurrentDate() {
-        return LocalDate.now();
-    }
-
     private final Random RANDOM = new SecureRandom();
 
     public String generateUserId(int length) {
@@ -27,5 +23,9 @@ public class Utils {
             returnValue.append(ALPHABET.charAt(RANDOM.nextInt(ALPHABET.length())));
         }
         return new String(returnValue);
+    }
+
+    public static LocalDate getCurrentDate() {
+        return LocalDate.now();
     }
 }

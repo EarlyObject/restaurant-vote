@@ -12,6 +12,7 @@ import com.sar.ws.shared.dto.UserDto;
 import com.sar.ws.shared.dto.Utils;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
@@ -50,7 +51,6 @@ class UserServiceImplTest {
     Role role = new Role(Roles.ROLE_USER.name());
     Set<Role> roleSet = new HashSet<>();
     List<Vote> voteList = new ArrayList<>();
-
 
     @BeforeEach
     void setUp() {
@@ -133,11 +133,16 @@ class UserServiceImplTest {
     void updateUser() {
     }
 
+   */
     @Test
     void deleteUser() {
+        ArgumentCaptor<UserEntity> arg = ArgumentCaptor.forClass(UserEntity.class);
+        userRepository.delete(userEntity);
+        verify(userRepository).delete(arg.capture());
+        assertEquals(userEntity, arg.getValue());
     }
 
-    @Test
+   /* @Test
     void getUsers() {
     }*/
 }
