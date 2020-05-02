@@ -18,6 +18,7 @@ import org.springframework.security.access.prepost.PostAuthorize;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,7 +40,7 @@ public class UserController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserRest createUser(@RequestBody UserDetailsRequestModel userDetails) throws UserServiceException {
+    public UserRest createUser(@Valid @RequestBody UserDetailsRequestModel userDetails) throws UserServiceException {
         UserRest returnValue = new UserRest();
 
         if (userDetails.getFirstName().isEmpty()) {
@@ -58,7 +59,7 @@ public class UserController {
 
     @PostAuthorize("hasRole('ADMIN') or returnObject.userId == principal.userId")
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserView getUser(@PathVariable String id) {
+    public UserView getUser(@Valid @PathVariable String id) {
         return userService.getByUserId(id);
     }
 
@@ -78,7 +79,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
     @DeleteMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public OperationStatusModel deleteUser(@PathVariable String id) {
+    public OperationStatusModel deleteUser(@Valid @PathVariable String id) {
         OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
 
@@ -108,7 +109,7 @@ public class UserController {
 
     @PreAuthorize("#userId == principal.userId")
     @PostMapping(path = "/{userId}/votes")
-    public OperationStatusModel postVote(@PathVariable String userId, @RequestParam long restaurantId) {
+    public OperationStatusModel postVote(@Valid @PathVariable String userId, @Valid @RequestParam long restaurantId) {
         LocalDateTime postTime = LocalDateTime.now();
 
         return voteService.create(userId, restaurantId, postTime);
@@ -116,7 +117,7 @@ public class UserController {
 
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.userId")
     @GetMapping(path = "/{userId}/votes")
-    public List<VoteView> getVotes(@PathVariable String userId,
+    public List<VoteView> getVotes(@Valid @PathVariable String userId,
                                    @RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "limit", defaultValue = "25") int limit) {
 

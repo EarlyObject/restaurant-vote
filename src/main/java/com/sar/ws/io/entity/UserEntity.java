@@ -1,6 +1,7 @@
 package com.sar.ws.io.entity;
 
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
@@ -8,16 +9,11 @@ import java.util.List;
 @Entity(name = "users")
 public class UserEntity extends AbstractBaseEntity implements Serializable {
 
-//    private static final long serialVersionUID = 4746861687784182986L;
-
-  /*  @Id
-    @GeneratedValue
-    private long id;*/
-
     @Column(nullable = false)
     private String userId;
 
     @Column(nullable = false, length = 50)
+    @NotBlank
     private String firstName;
 
     @Column(nullable = false, length = 50)

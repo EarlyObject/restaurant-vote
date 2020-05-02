@@ -1,7 +1,10 @@
 package com.sar.ws.ui.model.request;
 
+import javax.validation.constraints.NotBlank;
+
 public class UserDetailsRequestModel {
 
+    @NotBlank(message = "Name is mandatory")
     private String firstName;
     private String lastName;
     private String email;

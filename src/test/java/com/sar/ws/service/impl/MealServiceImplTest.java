@@ -19,7 +19,6 @@ import java.util.Optional;
 
 import static com.sar.ws.MealTestData.DATE;
 import static com.sar.ws.MealTestData.MEAL1;
-import static com.sar.ws.RestaurantTestData.RESTAURANT;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -38,9 +37,9 @@ class MealServiceImplTest extends AbstractServiceTest{
 
     @Test
     void create() {
-        when(restaurantRepository.findById(anyLong())).thenReturn(Optional.of(RESTAURANT));
+        when(restaurantRepository.existsById(anyLong())).thenReturn(true);
         when(mealRepository.save(any())).thenReturn(MEAL1);
-        MealDto returnValue = mealService.create(mealDto, 1L);
+        MealDto returnValue = mealService.create(mealDto);
         assertNotNull(returnValue);
         assertEquals(returnValue.getDate(), MEAL1.getDate());
         assertEquals(returnValue.getDescription(), MEAL1.getDescription());
@@ -73,16 +72,16 @@ class MealServiceImplTest extends AbstractServiceTest{
     void update() {
         Meal meal = new Meal();
         when(mealRepository.findById(anyLong())).thenReturn(Optional.of(meal));
-        when(restaurantRepository.findById(anyLong())).thenReturn(Optional.of(RESTAURANT));
+        when(restaurantRepository.existsById(anyLong())).thenReturn(true);
         when(mealRepository.save(any())).thenReturn(MEAL1);
 
-        MealDto returnValue = mealService.update(1L, mealDto, 4444L);
+        MealDto returnValue = mealService.update(1L, mealDto);
 
         assertNotNull(meal);
         assertEquals(MEAL1.getDate(), meal.getDate());
         assertEquals(MEAL1.getDescription(), meal.getDescription());
         assertEquals(MEAL1.getPrice(), meal.getPrice());
-        assertEquals(4444L, meal.getRestaurantId());
+        assertEquals(MEAL1.getRestaurantId(), meal.getRestaurantId());
 
         assertNotNull(returnValue);
         assertEquals(MEAL1.getDate(), returnValue.getDate());

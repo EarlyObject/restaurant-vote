@@ -2,7 +2,6 @@ package com.sar.ws.ui.controller;
 
 import com.sar.ws.service.RestaurantService;
 import com.sar.ws.shared.dto.RestaurantDto;
-import com.sar.ws.ui.model.request.RestaurantDetailsRequestModel;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
@@ -37,7 +36,7 @@ class RestaurantControllerTest {
 
     @Test
     void create() throws Exception {
-        RestaurantDetailsRequestModel restaurantModel = new RestaurantDetailsRequestModel();
+        RestaurantDto restaurantModel = new RestaurantDto();
         when(restaurantService.create(any())).thenReturn(restaurantDto);
         RestaurantDto returnValue = restaurantController.create(restaurantModel);
         assertNotNull(returnValue);

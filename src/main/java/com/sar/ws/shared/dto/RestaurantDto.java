@@ -1,12 +1,17 @@
 package com.sar.ws.shared.dto;
 
+import javax.validation.constraints.NotBlank;
 import java.io.Serializable;
-import java.util.List;
 
 public class RestaurantDto implements Serializable {
     private static final long serialVersionUID = 7024178261305933055L;
+
     private long id;
+
+    @NotBlank(message = "Name is mandatory")
     private String name;
+
+    @NotBlank(message = "Address is mandatory")
     private String address;
 
     public long getId() {

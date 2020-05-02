@@ -9,11 +9,11 @@ import java.util.List;
 
 public interface MealService {
 
-    MealDto create(MealDto mealDto, long restaurantId);
+    MealDto create(MealDto mealDto);
 
     MealView getById(long id);
 
-    MealDto update(long id, MealDto mealDto, long restaurantId);
+    MealDto update(long id, MealDto mealDto);
 
     void delete(long id);
 

@@ -5,7 +5,6 @@ import com.sar.ws.service.RestaurantService;
 import com.sar.ws.shared.dto.RestaurantDto;
 import com.sar.ws.shared.view.JPAProjection;
 import com.sar.ws.shared.view.MealView;
-import com.sar.ws.ui.model.request.RestaurantDetailsRequestModel;
 import com.sar.ws.ui.model.response.OperationStatusModel;
 import com.sar.ws.ui.model.response.RequestOperationName;
 import com.sar.ws.ui.model.response.RequestOperationStatus;
@@ -35,7 +34,7 @@ public class RestaurantController {
     @Secured("ROLE_ADMIN")
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestaurantDto create(@RequestBody RestaurantDetailsRequestModel restaurantModel) throws Exception {
+    public RestaurantDto create(@RequestBody RestaurantDto restaurantModel) throws Exception {
 
         RestaurantDto restaurantDto = new RestaurantDto();
         BeanUtils.copyProperties(restaurantModel, restaurantDto);
@@ -65,7 +64,7 @@ public class RestaurantController {
 
     @Secured("ROLE_ADMIN")
     @PutMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestaurantDto update(@PathVariable Long id, @RequestBody RestaurantDetailsRequestModel restaurantModel) {
+    public RestaurantDto update(@PathVariable Long id, @RequestBody RestaurantDto restaurantModel) {
 
         RestaurantDto restaurantDto = new RestaurantDto();
         BeanUtils.copyProperties(restaurantModel, restaurantDto);

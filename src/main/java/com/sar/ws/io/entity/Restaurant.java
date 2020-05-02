@@ -14,7 +14,7 @@ import java.util.Set;
 public class Restaurant extends AbstractBaseEntity {
 
     @Column(nullable = false)
-    @NotBlank
+    @NotBlank(message = "Name is mandatory")
     private String name;
 
     @Column(nullable = false)
