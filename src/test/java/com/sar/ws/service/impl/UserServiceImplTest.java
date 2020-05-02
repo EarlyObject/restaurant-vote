@@ -1,49 +1,35 @@
 package com.sar.ws.service.impl;
 
-import com.sar.ws.UserTestData;
 import com.sar.ws.exceptions.UserServiceException;
 import com.sar.ws.io.entity.Role;
 import com.sar.ws.io.entity.UserEntity;
 import com.sar.ws.io.entity.Vote;
-import com.sar.ws.io.repositories.RoleRepository;
-import com.sar.ws.io.repositories.UserRepository;
 import com.sar.ws.shared.Roles;
 import com.sar.ws.shared.dto.UserDto;
-import com.sar.ws.shared.dto.Utils;
+import com.sar.ws.shared.dto.VoteDto;
+import com.sar.ws.shared.view.UserView;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.projection.ProjectionFactory;
+import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
+import static com.sar.ws.UserTestData.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-class UserServiceImplTest {
+class UserServiceImplTest extends AbstractServiceTest{
 
-    @InjectMocks
-    UserServiceImpl userService;
 
-    @Mock
-    UserRepository userRepository;
-
-    @Mock
-    Utils utils;
-
-    @Mock
-    BCryptPasswordEncoder bCryptPasswordEncoder;
-
-    @Mock
-    RoleRepository roleRepository;
 
     UserEntity userEntity;
     UserDto userDto;
@@ -57,31 +43,33 @@ class UserServiceImplTest {
         MockitoAnnotations.initMocks(this);
         userEntity = new UserEntity();
         userEntity.setId(1L);
-        userEntity.setUserId(UserTestData.USER_ID);
-        userEntity.setFirstName(UserTestData.FIRST_NAME);
-        userEntity.setLastName(UserTestData.LAST_NAME);
-        userEntity.setEmail(UserTestData.EMAIL);
-        userEntity.setEncryptedPassword(UserTestData.ENCRYPTED_PASSWORD);
+        userEntity.setUserId(USER_ID);
+        userEntity.setFirstName(FIRST_NAME);
+        userEntity.setLastName(LAST_NAME);
+        userEntity.setEmail(EMAIL);
+        userEntity.setEncryptedPassword(ENCRYPTED_PASSWORD);
         userEntity.setVotes(voteList);
         roleSet.add(role);
         userEntity.setRoles(roleSet);
 
         userDto = new UserDto();
-        userDto.setFirstName(UserTestData.FIRST_NAME);
-        userDto.setLastName(UserTestData.LAST_NAME);
-        userDto.setPassword(UserTestData.PASSWORD);
-        userDto.setEncryptedPassword(UserTestData.ENCRYPTED_PASSWORD);
-        userDto.setEmail(UserTestData.EMAIL);
+        userDto.setFirstName(FIRST_NAME);
+        userDto.setLastName(LAST_NAME);
+        userDto.setPassword(PASSWORD);
+        userDto.setEncryptedPassword(ENCRYPTED_PASSWORD);
+        userDto.setEmail(EMAIL);
         Set<String> roles = new HashSet<>();
         roles.add(Roles.ROLE_USER.name());
+        List<VoteDto> voteDtos = new ArrayList<>();
+        userDto.setVotes(voteDtos);
         userDto.setRoles(roles);
     }
 
     @Test
     void createUser() {
         when(userRepository.findByEmail(anyString())).thenReturn(null);
-        when(utils.generateUserId(anyInt())).thenReturn(UserTestData.USER_ID);
-        when(bCryptPasswordEncoder.encode(anyString())).thenReturn(UserTestData.ENCRYPTED_PASSWORD);
+        when(utils.generateUserId(anyInt())).thenReturn(USER_ID);
+        when(bCryptPasswordEncoder.encode(anyString())).thenReturn(ENCRYPTED_PASSWORD);
         when(userRepository.save(any(UserEntity.class))).thenReturn(userEntity);
 
         UserDto storedUserDetails = userService.createUser(userDto);
@@ -95,45 +83,74 @@ class UserServiceImplTest {
         assertEquals(0, storedUserDetails.getVotes().size());
         assertEquals(storedUserDetails.getRoles(), roleSet);
         assertEquals(userEntity.getRoles(), storedUserDetails.getRoles());
-        verify(bCryptPasswordEncoder, times(1)).encode(UserTestData.PASSWORD);
+        verify(bCryptPasswordEncoder, times(1)).encode(PASSWORD);
         verify(userRepository, times(1)).save(any(UserEntity.class));
     }
 
     @Test
     void createUser_UserServiceException() {
         when(userRepository.findByEmail(anyString())).thenReturn(userEntity);
-        assertThrows(UserServiceException.class,
-                () -> userService.createUser(userDto));
+        assertThrows(UserServiceException.class, () -> userService.createUser(userDto));
     }
 
     @Test
     void getUser() {
         when(userRepository.findByEmail(anyString())).thenReturn(userEntity);
-        UserDto userDto = userService.getUser(UserTestData.EMAIL);
+        UserDto userDto = userService.getUser(EMAIL);
         assertNotNull(userDto);
-        assertEquals(UserTestData.FIRST_NAME, userDto.getFirstName());
+        assertEquals(FIRST_NAME, userDto.getFirstName());
     }
 
     @Test
     void getUser_UsernameNotFoundException() {
         when(userRepository.findByEmail(anyString())).thenReturn(null);
         assertThrows(UsernameNotFoundException.class,
-                () -> userService.getUser(UserTestData.EMAIL));
+                () -> userService.getUser(EMAIL));
     }
 
-    /*@Test
+    @Test
     void loadUserByUsername() {
+        when(userRepository.findByEmail(anyString())).thenReturn(userEntity);
+        UserDetails userDetails = userService.loadUserByUsername(EMAIL);
+        assertNotNull(userDetails);
+        assertEquals(userDetails.getUsername(), userEntity.getEmail());
+        assertTrue(userDetails.isEnabled());
     }
 
     @Test
     void getByUserId() {
+        ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
+        UserView userViewTest = factory.createProjection(UserView.class);
+        userViewTest.setUserId(USER_ID);
+        userViewTest.setFirstName(FIRST_NAME);
+        userViewTest.setLastName(LAST_NAME);
+        userViewTest.setEmail(EMAIL);
+
+        when(userRepository.getByUserId(anyString())).thenReturn(Optional.of(userViewTest));
+        UserView userView = userService.getByUserId(USER_ID);
+        assertNotNull(userView);
+        assertEquals(userView.getUserId(), userEntity.getUserId());
+        assertEquals(userView.getFirstName(), userEntity.getFirstName());
+        assertEquals(userView.getLastName(), userEntity.getLastName());
+        assertEquals(userView.getEmail(), userEntity.getEmail());
     }
 
     @Test
     void updateUser() {
+        when(userRepository.findByUserId(anyString())).thenReturn(userEntity);
+        when(userRepository.save(any())).thenReturn(userEntity);
+        UserDto testUserDto = userService.updateUser(USER_ID, userDto);
+        assertNotNull(testUserDto);
+        assertEquals(testUserDto.getId(), userEntity.getId());
+        assertEquals(testUserDto.getUserId(), userEntity.getUserId());
+        assertEquals(testUserDto.getFirstName(), userDto.getFirstName());
+        assertEquals(testUserDto.getLastName(), userDto.getLastName());
+        assertEquals(testUserDto.getEmail(), userDto.getEmail());
+        assertEquals(testUserDto.getVotes(), userDto.getVotes());
+        assertEquals(testUserDto.getEncryptedPassword(), userDto.getEncryptedPassword());
+        assertEquals(testUserDto.getEmailVerificationStatus(), userDto.getEmailVerificationStatus());
     }
 
-   */
     @Test
     void deleteUser() {
         ArgumentCaptor<UserEntity> arg = ArgumentCaptor.forClass(UserEntity.class);
@@ -142,7 +159,16 @@ class UserServiceImplTest {
         assertEquals(userEntity, arg.getValue());
     }
 
-   /* @Test
+    @Test
     void getUsers() {
-    }*/
+        List<UserEntity> list = new ArrayList<>();
+        list.add(userEntity);
+        list.add(userEntity);
+        Page<UserEntity> page = new PageImpl<>(list);
+        when(userRepository.findAll(any(Pageable.class))).thenReturn(page);
+        List<UserDto> userDtos = userService.getUsers(0, 10);
+        assertNotNull(userDtos);
+        assertTrue(userDtos.size() == 2);
+        assertEquals(FIRST_NAME, userDtos.get(0).getFirstName());
+    }
 }

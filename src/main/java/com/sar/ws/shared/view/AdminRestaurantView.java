@@ -7,4 +7,10 @@ public interface AdminRestaurantView extends JPAProjection {
     String getName();
 
     String getAddress();
+
+    void setId(long id);
+
+    void setName(String name);
+
+    void setAddress(String address);
 }

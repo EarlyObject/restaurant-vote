@@ -12,4 +12,14 @@ public interface MealView {
     Double getPrice();
 
     long getRestaurantId();
+
+    void setId(long id);
+
+    void setDate(LocalDate date);
+
+    void setDescription(String description);
+
+    void setPrice(Double price);
+
+    void setRestaurantId(long id);
 }

@@ -28,6 +28,14 @@ public class Meal extends AbstractBaseEntity {
     public Meal() {
     }
 
+    public Meal(long id, LocalDate date, String description, Double price, long restaurantId) {
+        super(id);
+        this.date = date;
+        this.description = description;
+        this.price = price;
+        this.restaurantId = restaurantId;
+    }
+
     public LocalDate getDate() {
         return date;
     }

@@ -51,7 +51,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         if (returnValue.isPresent()) {
             return returnValue.get();
         } else {
-            throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
+            throw new RestaurantServiceException("Restaurant with ID: " + id + " not found or has no meal today");
         }
     }
 

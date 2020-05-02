@@ -36,6 +36,15 @@ public class Restaurant extends AbstractBaseEntity {
     public Restaurant() {
     }
 
+    public Restaurant(Restaurant restaurant) {
+        super(restaurant.getId());
+        this.name = restaurant.getName();
+        this.address = restaurant.getAddress();
+        this.meals = restaurant.getMeals();
+        this.votes = restaurant.getVotes();
+        this.votesCount = restaurant.getVotesCount();
+    }
+
     public String getName() {
         return name;
     }

@@ -11,12 +11,6 @@ import java.time.LocalDateTime;
 @Table(name = "votes")
 public class Vote extends AbstractBaseEntity {
 
-    private static final long serialVersionUID = 1157392787989018975L;
-
-    @Id
-    @GeneratedValue
-    private long id;
-
     @Column(name = "created", nullable = false)
     private LocalDateTime created;
 

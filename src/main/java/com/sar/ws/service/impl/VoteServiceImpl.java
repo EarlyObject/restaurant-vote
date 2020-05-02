@@ -25,6 +25,7 @@ public class VoteServiceImpl implements VoteService {
     @Autowired
     VoteRepository voteRepository;
 
+    //разобраться с id у Entities
     @Override
     public OperationStatusModel create(String userId, long restaurantId, LocalDateTime postTime) {
         OperationStatusModel returnValue = new OperationStatusModel();

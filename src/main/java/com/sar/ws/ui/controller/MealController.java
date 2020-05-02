@@ -68,12 +68,7 @@ public class MealController {
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
     public List<MealView> getMeals(@RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "limit", defaultValue = "25") int limit) {
-
-        if (page > 0) {
-            page = page - 1;
-        }
-
-        List<MealView> returnValue = mealService.getAll(page, limit);
-        return returnValue;
+        if (page > 0) page = page - 1;
+        return mealService.getAll(page, limit);
     }
 }
