@@ -25,59 +25,48 @@ public class RestaurantServiceImpl implements RestaurantService {
 
     @Override
     public RestaurantDto create(RestaurantDto restaurantDto) {
-
-        if (restaurantRepository.findById(restaurantDto.getId()).isPresent()) {
-            throw new RuntimeException("Record already exists");
-        }
-
         Restaurant restaurant = new Restaurant();
         BeanUtils.copyProperties(restaurantDto, restaurant);
 
         Restaurant storedRestaurant = restaurantRepository.save(restaurant);
         RestaurantDto returnValue = new RestaurantDto();
         BeanUtils.copyProperties(storedRestaurant, returnValue);
-
         return returnValue;
     }
 
     @Override
-    public JPAProjection getById(Long id, boolean loadAll) {
-        Optional<? extends JPAProjection> returnValue;
+    public  <T extends JPAProjection> T getById(Long id, boolean loadAll) {
+        Optional<T> returnValue;
         if (loadAll) {
-            returnValue = restaurantRepository.getById(id, getCurrentDate());
+            returnValue = (Optional<T>) restaurantRepository.getById(id, getCurrentDate());
         } else {
-            returnValue = restaurantRepository.getAdminRestaurantViewById(id);
+            returnValue = (Optional<T>) restaurantRepository.getAdminRestaurantViewById(id);
         }
-        if (returnValue.isPresent()) {
-            return returnValue.get();
-        } else {
+
+        if (returnValue.isEmpty()) {
             throw new RestaurantServiceException("Restaurant with ID: " + id + " not found or has no meal today");
         }
+        return returnValue.get();
     }
 
     @Override
     public RestaurantDto update(Long id, RestaurantDto restaurantDto) {
-        RestaurantDto returnValue = new RestaurantDto();
-
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
-
-        if (!restaurantOptional.isPresent()) {
+        if (restaurantOptional.isEmpty()) {
             throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
         }
-
         Restaurant restaurant = restaurantOptional.get();
         BeanUtils.copyProperties(restaurantDto, restaurant, "id");
         Restaurant updatedRestaurant = restaurantRepository.save(restaurant);
 
-        BeanUtils.copyProperties(updatedRestaurant, returnValue);
-        return returnValue;
+        BeanUtils.copyProperties(updatedRestaurant, restaurantDto);
+        return restaurantDto;
     }
 
     @Override
     public void delete(Long id) {
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
-
-        if (!restaurantOptional.isPresent()) {
+        if (restaurantOptional.isEmpty()) {
             throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
         }
         restaurantRepository.delete(restaurantOptional.get());
@@ -88,12 +77,10 @@ public class RestaurantServiceImpl implements RestaurantService {
         Pageable pageableRequest = PageRequest.of(page, limit);
         List<? extends JPAProjection> restaurantViews;
         if (loadAll) {
-            restaurantViews = restaurantRepository.getAllWithMealsAndVotes(getCurrentDate(),
-                    pageableRequest);
+            restaurantViews = restaurantRepository.getAllWithMealsAndVotes(getCurrentDate(), pageableRequest);
         } else {
             restaurantViews = restaurantRepository.getAllBy();
         }
-
         return restaurantViews;
     }
 }

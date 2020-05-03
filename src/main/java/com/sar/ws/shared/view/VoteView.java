@@ -11,4 +11,12 @@ public interface VoteView {
     long getRestaurantId();
 
     long getUserId();
+
+    void setId(long id);
+
+    void setCreated(LocalDateTime dateTime);
+
+    void setRestaurantId(long restaurantId);
+
+    void setUserId(long userId);
 }

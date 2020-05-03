@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 
 import java.util.Date;
+import java.util.Objects;
 
 @ControllerAdvice
 public class AppExceptionsHandler {
@@ -24,7 +25,7 @@ public class AppExceptionsHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<Object> handleValidationExceptions(MethodArgumentNotValidException ex) {
 
-        ErrorMessage errorMessage = new ErrorMessage(new Date(), ex.getBindingResult().getFieldError().getDefaultMessage());
+        ErrorMessage errorMessage = new ErrorMessage(new Date(), Objects.requireNonNull(ex.getBindingResult().getFieldError()).getDefaultMessage());
         return new ResponseEntity<>(errorMessage, new HttpHeaders(), HttpStatus.BAD_REQUEST);
     }
 

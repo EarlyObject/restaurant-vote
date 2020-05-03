@@ -10,22 +10,20 @@ import org.mockito.ArgumentCaptor;
 import org.springframework.beans.BeanUtils;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.projection.ProjectionFactory;
-import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 
-import static com.sar.ws.MealTestData.DATE;
-import static com.sar.ws.MealTestData.MEAL1;
+import static com.sar.ws.MealTestData.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class MealServiceImplTest extends AbstractServiceTest{
+class MealServiceImplTest extends AbstractServiceTest {
 
     MealDto mealDto;
 
@@ -49,12 +47,7 @@ class MealServiceImplTest extends AbstractServiceTest{
 
     @Test
     void getById() {
-        ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
-        MealView mealView = factory.createProjection(MealView.class);
-        mealView.setId(3000L);
-        mealView.setDate(DATE);
-        mealView.setDescription("testMeal");
-        mealView.setPrice(10.00);
+        MealView mealView = getMealView();
         when(mealRepository.getById(anyLong())).thenReturn(Optional.of(mealView));
         MealView returnValue = mealService.getById(1L);
         assertNotNull(returnValue);
@@ -65,7 +58,7 @@ class MealServiceImplTest extends AbstractServiceTest{
     @Test
     void getById_MealServiceException() {
         when(mealRepository.getById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(MealServiceException.class, ()-> mealService.getById(1L));
+        assertThrows(MealServiceException.class, () -> mealService.getById(1L));
     }
 
     @Test
@@ -100,22 +93,55 @@ class MealServiceImplTest extends AbstractServiceTest{
 
     @Test
     void getAll() {
+        MealView mealView = getMealView();
+        List<MealView> mealViews = new ArrayList<>(Arrays.asList(mealView, mealView));
+        when(mealRepository.getAllBy(any())).thenReturn(mealViews);
+        List<MealView> returnValue = mealService.getAll(1, 10);
+        assertNotNull(returnValue);
+        assertEquals(2, returnValue.size());
     }
 
     @Test
     void getFiltered() {
-        List<MealView> mealViews = new ArrayList<>();
-        ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
-        MealView mealView = factory.createProjection(MealView.class);
-        MealView mealView2 = factory.createProjection(MealView.class);
-        MealView mealView3 = factory.createProjection(MealView.class);
-        mealViews.add(mealView);
-        mealViews.add(mealView2);
-        mealViews.add(mealView3);
+        MealView mealView = getMealView();
+        List<MealView> mealViews = new ArrayList<>(Arrays.asList(mealView, mealView, mealView));
         Pageable pageable = PageRequest.of(1, 10);
         when(mealRepository.getByRestaurantId(anyLong(), any())).thenReturn(mealViews);
-        when(mealRepository.getByRestaurantIdAndDateIsAfter(anyLong(), any(), any())).thenReturn(mealViews);
+
+        List<MealView> returnValue = mealService.getFiltered(1L, null, null, pageable);
+        assertNotNull(returnValue);
+        assertEquals(3, returnValue.size());
+    }
+
+    @Test
+    void getFiltered_DateIsBefore() {
+        MealView mealView = getMealView();
+        List<MealView> mealViews = new ArrayList<>(Arrays.asList(mealView, mealView, mealView));
+        Pageable pageable = PageRequest.of(1, 10);
         when(mealRepository.getByRestaurantIdAndDateIsBefore(anyLong(), any(), any())).thenReturn(mealViews);
+
+        List<MealView> returnValue = mealService.getFiltered(1L, null, DATE, pageable);
+        assertNotNull(returnValue);
+        assertEquals(3, returnValue.size());
+    }
+
+    @Test
+    void getFiltered_DateIsAfter() {
+        MealView mealView = getMealView();
+        List<MealView> mealViews = new ArrayList<>(Arrays.asList(mealView, mealView, mealView));
+        Pageable pageable = PageRequest.of(1, 10);
+        when(mealRepository.getByRestaurantIdAndDateIsAfter(anyLong(), any(), any())).thenReturn(mealViews);
+
+        List<MealView> returnValue = mealService.getFiltered(1L, DATE, null, pageable);
+        assertNotNull(returnValue);
+        assertEquals(3, returnValue.size());
+    }
+
+    @Test
+    void getFiltered_DateIsBetween() {
+        MealView mealView = getMealView();
+        List<MealView> mealViews = new ArrayList<>(Arrays.asList(mealView, mealView, mealView));
+        Pageable pageable = PageRequest.of(1, 10);
         when(mealRepository.getByRestaurantIdAndDateIsBetween(anyLong(), any(), any(), any())).thenReturn(mealViews);
 
         List<MealView> returnValue = mealService.getFiltered(1L, DATE, DATE, pageable);

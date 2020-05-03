@@ -3,7 +3,6 @@ package com.sar.ws.security;
 import com.sar.ws.io.entity.UserEntity;
 import com.sar.ws.io.repositories.UserRepository;
 import io.jsonwebtoken.Jwts;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -14,7 +13,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.ArrayList;
+import java.util.Optional;
 
 public class AuthorizationFilter extends BasicAuthenticationFilter {
 
@@ -56,17 +55,16 @@ public class AuthorizationFilter extends BasicAuthenticationFilter {
                     .getSubject();
 
             if (user != null) {
-                UserEntity userEntity = userRepository.findByEmail(user);
-                if (userEntity == null) {
+                Optional<UserEntity> optionalUserEntity = userRepository.findByEmail(user);
+                if (optionalUserEntity.isEmpty()) {
                     return null;
                 }
+                UserEntity userEntity = optionalUserEntity.get();
                 UserPrincipal userPrincipal = new UserPrincipal(userEntity);
                 return new UsernamePasswordAuthenticationToken(userPrincipal, null, userPrincipal.getAuthorities());
             }
-
             return null;
         }
-
         return null;
     }
 }

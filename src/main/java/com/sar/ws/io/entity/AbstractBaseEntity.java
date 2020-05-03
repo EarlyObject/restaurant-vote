@@ -28,4 +28,19 @@ public class AbstractBaseEntity implements Serializable {
     public void setId(long id) {
         this.id = id;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof AbstractBaseEntity)) return false;
+
+        AbstractBaseEntity that = (AbstractBaseEntity) o;
+
+        return getId() == that.getId();
+    }
+
+    @Override
+    public int hashCode() {
+        return (int) (getId() ^ (getId() >>> 32));
+    }
 }

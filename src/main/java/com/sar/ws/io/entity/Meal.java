@@ -75,4 +75,16 @@ public class Meal extends AbstractBaseEntity {
     public void setRestaurantId(long restaurantId) {
         this.restaurantId = restaurantId;
     }
+
+    @Override
+    public String toString() {
+        return "Meal{" +
+                "date=" + date +
+                ", description='" + description + '\'' +
+                ", price=" + price +
+                ", restaurant=" + restaurant +
+                ", restaurantId=" + restaurantId +
+                ", id=" + id +
+                '}';
+    }
 }

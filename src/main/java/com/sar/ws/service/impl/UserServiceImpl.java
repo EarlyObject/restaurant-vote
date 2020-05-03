@@ -11,9 +11,9 @@ import com.sar.ws.shared.dto.UserDto;
 import com.sar.ws.shared.dto.Utils;
 import com.sar.ws.shared.view.UserView;
 import com.sar.ws.ui.model.response.ErrorMessages;
+import com.sar.ws.ui.model.response.UserRest;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -39,108 +39,86 @@ public class UserServiceImpl implements UserService {
     RoleRepository roleRepository;
 
     @Override
-    public UserDto createUser(UserDto user) {
-
-        if (userRepository.findByEmail(user.getEmail()) != null) {
-            throw new UserServiceException("Email already registered");
-        }
+    public UserRest create(UserDto userDto) {
 
         UserEntity userEntity = new UserEntity();
-        BeanUtils.copyProperties(user, userEntity);
+        BeanUtils.copyProperties(userDto, userEntity);
 
         userEntity.setUserId(utils.generateUserId(20));
-        userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(user.getPassword()));
+        userEntity.setEncryptedPassword(bCryptPasswordEncoder.encode(userDto.getPassword()));
 
-        //Set roles
         Collection<Role> roleEntities = new HashSet<>();
-        for (String role : user.getRoles()) {
+        for (String role : userDto.getRoles()) {
             Role roleEntity = roleRepository.findByName(role);
             if (roleEntity != null) {
                 roleEntities.add(roleEntity);
             }
         }
-
         userEntity.setRoles(roleEntities);
 
-        UserEntity storedUserDetails = userRepository.save(userEntity);
-        UserDto returnValue = new UserDto();
-        BeanUtils.copyProperties(storedUserDetails, returnValue);
+        UserEntity savedUser = userRepository.save(userEntity);
+        UserRest returnValue = new UserRest();
+        BeanUtils.copyProperties(savedUser, returnValue);
         return returnValue;
     }
 
     @Override
     public UserDto getUser(String email) {
-        UserEntity userEntity = userRepository.findByEmail(email);
-        if (userEntity == null) {
-            throw new UsernameNotFoundException(email);
+        Optional<UserEntity> userEntity = userRepository.findByEmail(email);
+        if (userEntity.isEmpty()) {
+            throw new UsernameNotFoundException("User with email: " + email + " not found");
         }
-
         UserDto returnValue = new UserDto();
-        BeanUtils.copyProperties(userEntity, returnValue);
+        BeanUtils.copyProperties(userEntity.get(), returnValue);
         return returnValue;
     }
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        UserEntity userEntity = userRepository.findByEmail(email);
-        if (userEntity == null) {
-            throw new UsernameNotFoundException(email);
+        Optional<UserEntity> userEntity = userRepository.findByEmail(email);
+        if (userEntity.isEmpty()) {
+            throw new UsernameNotFoundException("User with email: " + email + " not found");
         }
-        return new UserPrincipal(userEntity);
+        return new UserPrincipal(userEntity.get());
     }
 
     @Override
     public UserView getByUserId(String userId) {
         Optional<UserView> userViewOptional = userRepository.getByUserId(userId);
-        if (!userViewOptional.isPresent()) {
+        if (userViewOptional.isEmpty()) {
             throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
         return userViewOptional.get();
     }
 
     @Override
-    public UserDto updateUser(String userId, UserDto user) {
-        UserDto returnValue = new UserDto();
-        UserEntity userEntity = userRepository.findByUserId(userId);
-
-        if (userEntity == null) {
+    public UserRest updateUser(String userId, UserDto user) {
+        Optional<UserEntity> optionalUserEntity = userRepository.findByUserId(userId);
+        if (optionalUserEntity.isEmpty()) {
             throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
-
-        //check if need to update more fields
+        UserEntity userEntity = optionalUserEntity.get();
         userEntity.setFirstName(user.getFirstName());
         userEntity.setLastName(user.getLastName());
 
-        UserEntity updatedUserDetails = userRepository.save(userEntity);
-        BeanUtils.copyProperties(updatedUserDetails, returnValue);
-
+        UserEntity updatedUser = userRepository.save(userEntity);
+        UserRest returnValue = new UserRest();
+        BeanUtils.copyProperties(updatedUser, returnValue);
         return returnValue;
     }
 
     @Override
     public void deleteUser(String userId) {
-        UserEntity userEntity = userRepository.findByUserId(userId);
-
-        if (userEntity == null) {
+        Optional<UserEntity> optionalUserEntity = userRepository.findByUserId(userId);
+        if (optionalUserEntity.isEmpty()) {
             throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
-        userRepository.delete(userEntity);
+        userRepository.delete(optionalUserEntity.get());
     }
 
     @Override
-    public List<UserDto> getUsers(int page, int limit) {
-        List<UserDto> returnValue = new ArrayList<>();
-
+    public List<UserView> getUsers(int page, int limit) {
         Pageable pageableRequest = PageRequest.of(page, limit);
-        Page<UserEntity> usersPage = userRepository.findAll(pageableRequest);
-        List<UserEntity> users = usersPage.getContent();
-
-        for (UserEntity userEntity : users) {
-            UserDto userDto = new UserDto();
-            BeanUtils.copyProperties(userEntity, userDto);
-            returnValue.add(userDto);
-        }
-
-        return returnValue;
+        return userRepository.getAllBy(pageableRequest);
     }
 }

@@ -10,7 +10,7 @@ public interface RestaurantView extends JPAProjection {
 
     String getAddress();
 
-    Integer getVotesCount();
+//    Integer getVotesCount();
 
     List<MealView> getMeals();
 
@@ -26,7 +26,7 @@ public interface RestaurantView extends JPAProjection {
 
     void setAddress(String address);
 
-    void setVotesCount(Integer votesCount);
+//    void setVotesCount(Integer votesCount);
 
     void setMeals(List<MealView> mealViews);
 }

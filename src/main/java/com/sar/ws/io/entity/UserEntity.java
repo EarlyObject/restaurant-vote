@@ -19,8 +19,7 @@ public class UserEntity extends AbstractBaseEntity implements Serializable {
     @Column(nullable = false, length = 50)
     private String lastName;
 
-    //   @Column(nullable = false, length = 120, unique = true)
-    @Column(nullable = false, length = 120)
+    @Column(nullable = false, length = 120, unique = true)
     private String email;
 
     @Column(nullable = false)
@@ -110,5 +109,20 @@ public class UserEntity extends AbstractBaseEntity implements Serializable {
 
     public void setVotes(List<Vote> votes) {
         this.votes = votes;
+    }
+
+    @Override
+    public String toString() {
+        return "UserEntity{" +
+                "userId='" + userId + '\'' +
+                ", firstName='" + firstName + '\'' +
+                ", lastName='" + lastName + '\'' +
+                ", email='" + email + '\'' +
+                ", encryptedPassword='" + encryptedPassword + '\'' +
+                ", emailVerificationStatus=" + emailVerificationStatus +
+                ", roles=" + roles +
+                ", votes=" + votes +
+                ", id=" + id +
+                '}';
     }
 }

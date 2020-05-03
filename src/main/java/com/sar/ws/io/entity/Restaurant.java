@@ -10,7 +10,7 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "restaurants")
+@Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "address"})})
 public class Restaurant extends AbstractBaseEntity {
 
     @Column(nullable = false)
@@ -25,6 +25,7 @@ public class Restaurant extends AbstractBaseEntity {
     @OrderBy("date DESC")
     private List<Meal> meals;
 
+    //check lazyCollection
     @LazyCollection(LazyCollectionOption.EXTRA)
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("created DESC")
@@ -83,5 +84,14 @@ public class Restaurant extends AbstractBaseEntity {
 
     public void setVotesCount(int votesCount) {
         this.votesCount = votesCount;
+    }
+
+    @Override
+    public String toString() {
+        return "Restaurant{" +
+                "name='" + name + '\'' +
+                ", address='" + address + '\'' +
+                ", id=" + id +
+                '}';
     }
 }
