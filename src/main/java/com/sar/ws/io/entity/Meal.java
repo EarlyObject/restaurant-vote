@@ -5,7 +5,12 @@ import javax.validation.constraints.NotBlank;
 import java.time.LocalDate;
 
 @Entity
-@Table(name = "meals")
+@Table(name = "meals",
+        indexes = {@Index(name = "idx_id", columnList = "id"),
+                @Index(name = "idx_restaurantId", columnList = "restaurant_id"),
+                @Index(name = "idx_date", columnList = "date"),
+                @Index(name = "idx_restaurantId_date", columnList = "restaurant_id, date")},
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"date", "description", "restaurant_id"})})
 public class Meal extends AbstractBaseEntity {
 
     @Column(name = "date", nullable = false)

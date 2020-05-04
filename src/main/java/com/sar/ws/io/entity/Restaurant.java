@@ -10,7 +10,8 @@ import java.util.List;
 import java.util.Set;
 
 @Entity
-@Table(name = "restaurants", uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "address"})})
+@Table(name = "restaurants",
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"name", "address"})})
 public class Restaurant extends AbstractBaseEntity {
 
     @Column(nullable = false)

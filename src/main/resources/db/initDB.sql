@@ -14,54 +14,76 @@ CREATE SEQUENCE GLOBAL_SEQ START WITH 1000;
 
 create table ROLES
 (
-    ID   BIGINT DEFAULT GLOBAL_SEQ.nextval PRIMARY KEY,
-    NAME VARCHAR(20) not null
+    ID   BIGINT default NEXT VALUE FOR "PUBLIC"."GLOBAL_SEQ" not null
+        primary key,
+    NAME VARCHAR(20)                                         not null
 );
 
 create table AUTHORITIES
 (
-    ID   BIGINT DEFAULT GLOBAL_SEQ.nextval PRIMARY KEY,
-    NAME VARCHAR(20) not null
+    ID   BIGINT default NEXT VALUE FOR "PUBLIC"."GLOBAL_SEQ" not null
+        primary key,
+    NAME VARCHAR(20)                                         not null
 );
 
 create table USERS
 (
-    ID                        BIGINT DEFAULT GLOBAL_SEQ.nextval PRIMARY KEY,
-    EMAIL                     VARCHAR(120) not null
+    ID                        BIGINT  default NEXT VALUE FOR "PUBLIC"."GLOBAL_SEQ" not null
+        primary key,
+    EMAIL                     VARCHAR(120)                                         not null
         constraint UK_6DOTKOTT2KJSP8VW4D0M25FB7
             unique,
-    EMAIL_VERIFICATION_STATUS BOOLEAN DEFAULT TRUE not null,
-    ENCRYPTED_PASSWORD        VARCHAR(255) not null,
-    FIRST_NAME                VARCHAR(50)  not null,
-    LAST_NAME                 VARCHAR(50)  not null,
-    USER_ID                   VARCHAR(255) not null
+    EMAIL_VERIFICATION_STATUS BOOLEAN default TRUE                                 not null,
+    ENCRYPTED_PASSWORD        VARCHAR(255)                                         not null,
+    FIRST_NAME                VARCHAR(50)                                          not null,
+    LAST_NAME                 VARCHAR(50)                                          not null,
+    USER_ID                   VARCHAR(255)                                         not null
 );
+
+create index IDX_EMAIL
+    on USERS (EMAIL);
+
+create index IDX_USERID
+    on USERS (USER_ID);
 
 create table RESTAURANTS
 (
-    ID          BIGINT DEFAULT GLOBAL_SEQ.nextval PRIMARY KEY,
-    ADDRESS     VARCHAR(255) not null,
-    NAME        VARCHAR(255) not null,
-    "TODAY"     DATE,
-    VOTES_COUNT INT
+    ID      BIGINT default NEXT VALUE FOR "PUBLIC"."GLOBAL_SEQ" not null
+        primary key,
+    ADDRESS VARCHAR(255)                                        not null,
+    NAME    VARCHAR(255)                                        not null
 );
 
 create table MEALS
 (
-    ID            BIGINT DEFAULT GLOBAL_SEQ.nextval PRIMARY KEY,
-    DATE          DATE         not null,
-    DESCRIPTION   VARCHAR(255) not null,
-    PRICE         DOUBLE       not null,
-    RESTAURANT_ID BIGINT       not null,
+    ID            BIGINT default NEXT VALUE FOR "PUBLIC"."GLOBAL_SEQ" not null
+        primary key,
+    DATE          DATE                                                not null,
+    DESCRIPTION   VARCHAR(255)                                        not null,
+    PRICE         DOUBLE                                              not null,
+    RESTAURANT_ID BIGINT                                              not null,
     constraint FKBGJH8QHPL94LSO4D5L6NBIYRY
         foreign key (RESTAURANT_ID) references RESTAURANTS (ID)
 );
 
+create index IDX_ID
+    on MEALS (ID);
+
+create index IDX_RESTAURANTID
+    on MEALS (RESTAURANT_ID);
+
+create index IDX_DATE
+    on MEALS (DATE);
+
+create index IDX_RESTAURANTID_DATE
+    on MEALS (RESTAURANT_ID, DATE);
+
 create table VOTES
 (
-    ID            BIGINT DEFAULT GLOBAL_SEQ.nextval PRIMARY KEY,
-    CREATED       TIMESTAMP not null,
-    DATE          DATE      not null,
+    ID            BIGINT default NEXT VALUE FOR "PUBLIC"."GLOBAL_SEQ" not null
+        primary key,
+    CREATED       TIMESTAMP                                           not null,
+    DATE          DATE                                                not null,
     RESTAURANT_ID BIGINT,
     USER_ID       VARCHAR(255),
     constraint FK93NQD6KKY7CYVBE4Q1EUP9GCX
@@ -70,6 +92,12 @@ create table VOTES
         foreign key (USER_ID) references USERS (ID)
             on delete cascade
 );
+
+create index IDX_V_USERID
+    on VOTES (USER_ID);
+
+create index IDX_V_USERIDANDDATE
+    on VOTES (USER_ID, DATE);
 
 create table USERS_ROLES
 (
@@ -90,3 +118,4 @@ create table ROLES_AUTHORITIES
     constraint FKE4PJSN2C2TTG8BPBE1YK29SNN
         foreign key (AUTHORITIES_ID) references AUTHORITIES (ID)
 );
+

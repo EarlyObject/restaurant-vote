@@ -6,7 +6,10 @@ import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
-@Entity(name = "users")
+@Entity
+@Table(name = "users",
+        indexes = {@Index(name = "idx_email", columnList = "email"),
+                    @Index(name = "idx_userId", columnList = "userId")})
 public class UserEntity extends AbstractBaseEntity implements Serializable {
 
     @Column(nullable = false)

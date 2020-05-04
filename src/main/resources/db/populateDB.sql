@@ -22,10 +22,10 @@ INSERT INTO PUBLIC.AUTHORITIES (NAME) VALUES
 ('WRITE_AUTHORITY'),
 ('DELETE_AUTHORITY');
 
-INSERT INTO PUBLIC.RESTAURANTS (ADDRESS, NAME, "TODAY", VOTES_COUNT) VALUES
-('Москва, проспект Маяковского 9', 'Белая устрица', null, null),
-('Москва, маршалла Жукова 12', 'Тбилиси', null, null),
-('Красная Пресня 44', 'Napoleon', null, null);
+INSERT INTO PUBLIC.RESTAURANTS (ADDRESS, NAME) VALUES
+('Москва, проспект Маяковского 9', 'Белая устрица'),
+('Москва, маршалла Жукова 12', 'Тбилиси'),
+('Красная Пресня 44', 'Napoleon');
 
 INSERT INTO PUBLIC.MEALS (DATE, DESCRIPTION, PRICE, RESTAURANT_ID) VALUES
 ('2020-04-01', 'Бараньи ребрышки', 15.5, 1007),
