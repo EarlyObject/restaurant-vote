@@ -13,10 +13,10 @@ import java.util.*;
 import static com.sar.ws.MealTestData.*;
 
 public class RestaurantTestData {
-    public static final long RESTAURANT_ID = 2000L;
-    public static final String RESTAURANT_NAME = "testRestaurantName";
-    public static final String RESTAURANT_ADDRESS = "testAddress";
-    public static final List<Meal> MEALS = new ArrayList<>(Arrays.asList(MEAL1, MEAL2, MEAL3));
+    public static final long RESTAURANT_ID = 1007L;
+    public static final String RESTAURANT_NAME = "Белая устрица";
+    public static final String RESTAURANT_ADDRESS = "Москва, проспект Маяковского 9";
+    public static final List<Meal> MEALS = new ArrayList<>(Arrays.asList(MEAL1, MEAL2));
     public static final Set<Vote> VOTES = new HashSet<>(Collections.singletonList(VoteTestData.VOTE));
 
     public static Restaurant getNewRestaurant() {
@@ -26,7 +26,7 @@ public class RestaurantTestData {
         dummyRestaurant.setAddress(RESTAURANT_ADDRESS);
         dummyRestaurant.setMeals(MEALS);
         dummyRestaurant.setVotes(VOTES);
-        dummyRestaurant.setVotesCount(VOTES.size());
+//        dummyRestaurant.setVotesCount(VOTES.size());
         return dummyRestaurant;
     }
 

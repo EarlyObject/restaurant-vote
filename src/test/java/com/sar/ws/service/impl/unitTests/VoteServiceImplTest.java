@@ -1,4 +1,4 @@
-package com.sar.ws.service.impl;
+package com.sar.ws.service.impl.unitTests;
 
 import com.sar.ws.io.entity.UserEntity;
 import com.sar.ws.shared.view.VoteView;

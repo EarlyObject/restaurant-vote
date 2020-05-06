@@ -1,6 +1,6 @@
-package com.sar.ws.service.impl;
+package com.sar.ws.service.impl.unitTests;
 
-import com.sar.ws.exceptions.MealServiceException;
+import com.sar.ws.exceptions.CustomServiceException;
 import com.sar.ws.io.entity.Meal;
 import com.sar.ws.shared.dto.MealDto;
 import com.sar.ws.shared.view.MealView;
@@ -58,7 +58,7 @@ class MealServiceImplTest extends AbstractServiceTest {
     @Test
     void getById_MealServiceException() {
         when(mealRepository.getById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(MealServiceException.class, () -> mealService.getById(1L));
+        assertThrows(CustomServiceException.class, () -> mealService.getById(1L));
     }
 
     @Test

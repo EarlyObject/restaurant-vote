@@ -1,6 +1,6 @@
-package com.sar.ws.service.impl;
+package com.sar.ws.service.impl.unitTests;
 
-import com.sar.ws.exceptions.RestaurantServiceException;
+import com.sar.ws.exceptions.CustomServiceException;
 import com.sar.ws.io.entity.Restaurant;
 import com.sar.ws.shared.dto.RestaurantDto;
 import com.sar.ws.shared.view.AdminRestaurantView;
@@ -71,7 +71,7 @@ class RestaurantServiceImplTest extends AbstractServiceTest {
     @Test
     void get_RestaurantServiceException() {
         when(restaurantRepository.getById(anyLong(), any())).thenReturn(null);
-        assertThrows(RestaurantServiceException.class, () -> restaurantService.getById(1L, false));
+        assertThrows(CustomServiceException.class, () -> restaurantService.getById(1L, false));
     }
 
     @Test

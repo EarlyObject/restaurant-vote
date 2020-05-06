@@ -1,7 +1,11 @@
-package com.sar.ws.service.impl;
+package com.sar.ws.service.impl.unitTests;
 
 import com.sar.ws.TestConfig;
 import com.sar.ws.io.repositories.*;
+import com.sar.ws.service.impl.MealServiceImpl;
+import com.sar.ws.service.impl.RestaurantServiceImpl;
+import com.sar.ws.service.impl.UserServiceImpl;
+import com.sar.ws.service.impl.VoteServiceImpl;
 import com.sar.ws.shared.dto.Utils;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;

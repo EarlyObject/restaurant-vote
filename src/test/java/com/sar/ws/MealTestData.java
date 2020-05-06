@@ -9,10 +9,12 @@ import java.time.LocalDate;
 
 public class MealTestData {
     public static final LocalDate DATE = LocalDate.of(2020, 4, 30);
+    public static final LocalDate CURRENT_DATE = LocalDate.now();
 
-    public static final Meal MEAL1 = new Meal(2000, DATE, "Hamburger", 20.00, 1010);
-    public static final Meal MEAL2 = new Meal(2001, DATE, "Salad", 15.00, 1010);
-    public static final Meal MEAL3 = new Meal(2002, DATE, "Juice", 10.00, 1010);
+    public static final Meal MEAL1 = new Meal(1016, CURRENT_DATE, "Лагман", 20.00, 1007);
+    public static final Meal MEAL2 = new Meal(1017, CURRENT_DATE, "Блинчики с мясом", 25.00, 1007);
+    public static final Meal MEAL3 = new Meal(1018, CURRENT_DATE, "Бастурма", 5.00, 1008);
+    public static final Meal MEAL4 = new Meal(1019, CURRENT_DATE, "Шашлык", 50.00, 1009);
 
     public static MealView getMealView() {
         ProjectionFactory factory = new SpelAwareProxyProjectionFactory();
