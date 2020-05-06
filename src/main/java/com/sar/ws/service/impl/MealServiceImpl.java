@@ -1,7 +1,6 @@
 package com.sar.ws.service.impl;
 
-import com.sar.ws.exceptions.MealServiceException;
-import com.sar.ws.exceptions.RestaurantServiceException;
+import com.sar.ws.exceptions.CustomServiceException;
 import com.sar.ws.io.entity.Meal;
 import com.sar.ws.io.repositories.MealRepository;
 import com.sar.ws.io.repositories.RestaurantRepository;
@@ -11,6 +10,8 @@ import com.sar.ws.shared.view.MealView;
 import com.sar.ws.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.lang.Nullable;
@@ -33,7 +34,7 @@ public class MealServiceImpl implements MealService {
     public MealDto create(MealDto mealDto) {
         long restaurantId = mealDto.getRestaurantId();
         if (!restaurantRepository.existsById(restaurantId)) {
-            throw new RestaurantServiceException("Restaurant with ID: " + restaurantId + " not found");
+            throw new CustomServiceException("Restaurant with ID: " + restaurantId + " not found");
         }
 
         Meal meal = new Meal();
@@ -48,20 +49,23 @@ public class MealServiceImpl implements MealService {
     public MealView getById(long id) {
         Optional<MealView> mealViewOptional = mealRepository.getById(id);
         if (mealViewOptional.isEmpty()) {
-            throw new MealServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+            throw new CustomServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
         return mealViewOptional.get();
     }
 
     @Override
+    @CacheEvict(value = "meals", key = "#id")
     public MealDto update(long id, MealDto mealDto) {
         long restaurantId = mealDto.getRestaurantId();
         Optional<Meal> mealOptional = mealRepository.findById(id);
         if (mealOptional.isEmpty()) {
-            throw new MealServiceException("Meal with ID: " + id + " not found");
+            throw new CustomServiceException("Meal with ID: " + id + " not found");
         }
+
+        //заменить на Optional??
         if (!restaurantRepository.existsById(restaurantId)) {
-            throw new RestaurantServiceException("Restaurant with ID: " + restaurantId + " not found");
+            throw new CustomServiceException("Restaurant with ID: " + restaurantId + " not found");
         }
 
         Meal meal = mealOptional.get();
@@ -73,16 +77,18 @@ public class MealServiceImpl implements MealService {
     }
 
     @Override
+    @CacheEvict(value = "meals", key = "#id")
     public void delete(long id) {
         Optional<Meal> mealOptional = mealRepository.findById(id);
 
         if (mealOptional.isEmpty()) {
-            throw new MealServiceException("Meal with ID: " + id + " not found");
+            throw new CustomServiceException("Meal with ID: " + id + " not found");
         }
         mealRepository.delete(mealOptional.get());
     }
 
     @Override
+    @Cacheable(value = "meals")
     public List<MealView> getAll(int page, int limit) {
         Pageable pageableRequest = PageRequest.of(page, limit);
         return mealRepository.getAllBy(pageableRequest);

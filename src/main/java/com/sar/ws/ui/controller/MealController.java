@@ -1,6 +1,6 @@
 package com.sar.ws.ui.controller;
 
-import com.sar.ws.exceptions.UserServiceException;
+import com.sar.ws.exceptions.CustomServiceException;
 import com.sar.ws.service.MealService;
 import com.sar.ws.shared.dto.MealDto;
 import com.sar.ws.shared.view.MealView;
@@ -26,7 +26,7 @@ public class MealController {
 
     @PostMapping(consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public MealDto create(@Valid @RequestBody MealDto mealDto) throws UserServiceException {
+    public MealDto create(@Valid @RequestBody MealDto mealDto) throws CustomServiceException {
         return mealService.create(mealDto);
     }
 

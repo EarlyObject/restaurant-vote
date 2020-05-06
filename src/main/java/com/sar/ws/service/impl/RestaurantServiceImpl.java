@@ -1,11 +1,12 @@
 package com.sar.ws.service.impl;
 
-import com.sar.ws.exceptions.RestaurantServiceException;
+import com.sar.ws.exceptions.CustomServiceException;
 import com.sar.ws.io.entity.Restaurant;
 import com.sar.ws.io.repositories.RestaurantRepository;
 import com.sar.ws.service.RestaurantService;
 import com.sar.ws.shared.dto.RestaurantDto;
 import com.sar.ws.shared.view.JPAProjection;
+import com.sar.ws.ui.model.response.ErrorMessages;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -44,7 +45,7 @@ public class RestaurantServiceImpl implements RestaurantService {
         }
 
         if (returnValue.isEmpty()) {
-            throw new RestaurantServiceException("Restaurant with ID: " + id + " not found or has no meal today");
+            throw new CustomServiceException("Restaurant with ID: " + id + " not found or has no meal today");
         }
         return returnValue.get();
     }
@@ -53,7 +54,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     public RestaurantDto update(Long id, RestaurantDto restaurantDto) {
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
         if (restaurantOptional.isEmpty()) {
-            throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
+            throw new CustomServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
         Restaurant restaurant = restaurantOptional.get();
         BeanUtils.copyProperties(restaurantDto, restaurant, "id");
@@ -67,7 +68,7 @@ public class RestaurantServiceImpl implements RestaurantService {
     public void delete(Long id) {
         Optional<Restaurant> restaurantOptional = restaurantRepository.findById(id);
         if (restaurantOptional.isEmpty()) {
-            throw new RestaurantServiceException("Restaurant with ID: " + id + " not found");
+            throw new CustomServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
         restaurantRepository.delete(restaurantOptional.get());
     }

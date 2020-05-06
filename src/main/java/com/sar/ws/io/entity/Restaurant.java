@@ -1,6 +1,5 @@
 package com.sar.ws.io.entity;
 
-import org.hibernate.annotations.Formula;
 import org.hibernate.annotations.LazyCollection;
 import org.hibernate.annotations.LazyCollectionOption;
 
@@ -32,8 +31,8 @@ public class Restaurant extends AbstractBaseEntity {
     @OrderBy("created DESC")
     private Set<Vote> votes;
 
-    @Formula("select count(*) from votes v where v.restaurant_id = id")
-    private int votesCount;
+   /* @Formula("select count(*) from votes v where v.restaurant_id = id")
+    private int votesCount;*/
 
     public Restaurant() {
     }
@@ -44,7 +43,7 @@ public class Restaurant extends AbstractBaseEntity {
         this.address = restaurant.getAddress();
         this.meals = restaurant.getMeals();
         this.votes = restaurant.getVotes();
-        this.votesCount = restaurant.getVotesCount();
+//        this.votesCount = restaurant.getVotesCount();
     }
 
     public String getName() {
@@ -79,13 +78,13 @@ public class Restaurant extends AbstractBaseEntity {
         this.votes = votes;
     }
 
-    public Integer getVotesCount() {
+    /*public Integer getVotesCount() {
         return votes.size();
-    }
+    }*/
 
-    public void setVotesCount(int votesCount) {
-        this.votesCount = votesCount;
-    }
+//    public void setVotesCount(int votesCount) {
+//        this.votesCount = votesCount;
+//    }
 
     @Override
     public String toString() {

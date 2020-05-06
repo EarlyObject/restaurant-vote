@@ -1,6 +1,6 @@
 package com.sar.ws.service.impl;
 
-import com.sar.ws.exceptions.UserServiceException;
+import com.sar.ws.exceptions.CustomServiceException;
 import com.sar.ws.io.entity.Role;
 import com.sar.ws.io.entity.UserEntity;
 import com.sar.ws.io.repositories.RoleRepository;
@@ -21,7 +21,10 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import java.util.*;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -86,7 +89,7 @@ public class UserServiceImpl implements UserService {
     public UserView getByUserId(String userId) {
         Optional<UserView> userViewOptional = userRepository.getByUserId(userId);
         if (userViewOptional.isEmpty()) {
-            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+            throw new CustomServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
         return userViewOptional.get();
     }
@@ -95,7 +98,7 @@ public class UserServiceImpl implements UserService {
     public UserRest updateUser(String userId, UserDto user) {
         Optional<UserEntity> optionalUserEntity = userRepository.findByUserId(userId);
         if (optionalUserEntity.isEmpty()) {
-            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+            throw new CustomServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
         UserEntity userEntity = optionalUserEntity.get();
         userEntity.setFirstName(user.getFirstName());
@@ -111,7 +114,7 @@ public class UserServiceImpl implements UserService {
     public void deleteUser(String userId) {
         Optional<UserEntity> optionalUserEntity = userRepository.findByUserId(userId);
         if (optionalUserEntity.isEmpty()) {
-            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+            throw new CustomServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         }
         userRepository.delete(optionalUserEntity.get());
     }

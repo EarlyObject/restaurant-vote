@@ -1,6 +1,6 @@
 package com.sar.ws.ui.controller;
 
-import com.sar.ws.exceptions.UserServiceException;
+import com.sar.ws.exceptions.CustomServiceException;
 import com.sar.ws.service.UserService;
 import com.sar.ws.service.VoteService;
 import com.sar.ws.shared.dto.UserDto;
@@ -43,7 +43,7 @@ public class UserController {
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserRest createUser(@RequestBody @Validated(UserDetailsRequestModel.InitialValidation.class) UserDetailsRequestModel userDetails) throws UserServiceException {
+    public UserRest createUser(@RequestBody @Validated(UserDetailsRequestModel.InitialValidation.class) UserDetailsRequestModel userDetails) throws CustomServiceException {
 
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails, userDto);

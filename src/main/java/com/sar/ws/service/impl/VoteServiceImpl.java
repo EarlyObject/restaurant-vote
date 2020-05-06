@@ -1,6 +1,6 @@
 package com.sar.ws.service.impl;
 
-import com.sar.ws.exceptions.UserServiceException;
+import com.sar.ws.exceptions.CustomServiceException;
 import com.sar.ws.io.entity.UserEntity;
 import com.sar.ws.io.entity.Vote;
 import com.sar.ws.io.repositories.UserRepository;
@@ -38,7 +38,7 @@ public class VoteServiceImpl implements VoteService {
         long id;
         Optional<UserEntity> optionalUserEntity = userRepository.findByUserId(userId);
         if (optionalUserEntity.isEmpty()) {
-            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+            throw new CustomServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         } else {
             id = optionalUserEntity.get().getId();
         }
@@ -68,7 +68,7 @@ public class VoteServiceImpl implements VoteService {
         long id;
         Optional<UserEntity> optionalUserEntity = userRepository.findByUserId(userId);
         if (optionalUserEntity.isEmpty()) {
-            throw new UserServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
+            throw new CustomServiceException(ErrorMessages.NO_RECORD_FOUND.getErrorMessage());
         } else {
             id = optionalUserEntity.get().getId();
             return voteRepository.getAllByUserId(id, pageable);
