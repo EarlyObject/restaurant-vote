@@ -47,8 +47,8 @@ INSERT INTO PUBLIC.ROLES_AUTHORITIES (ROLES_ID, AUTHORITIES_ID) VALUES
 (1003, 1006);
 
 INSERT INTO PUBLIC.USERS (EMAIL, EMAIL_VERIFICATION_STATUS, ENCRYPTED_PASSWORD, FIRST_NAME, LAST_NAME, USER_ID) VALUES
-('3@test.com', true, '$2a$10$IIramrophsPTsmUXA.hI3e6juoG6Sbrif1E/WwqJZQ.P0Iu2/fC3y', 'User3', 'TestUser', 'tMa4UtLClcoGUmozrDEt'),
-('10@test.com', true, '$2a$10$WtvdIZTXBJ.FIvpd2moTIueSfJdOdoSji2gOOHHVB8.ZykxGWlUu.', 'User4', 'TestUser', 'bJ3tnk2VANHwkPzXAUul'),
+('user3@test.com', true, '$2a$10$IIramrophsPTsmUXA.hI3e6juoG6Sbrif1E/WwqJZQ.P0Iu2/fC3y', 'User3', 'TestUser', 'tMa4UtLClcoGUmozrDEt'),
+('user4@test.com', true, '$2a$10$WtvdIZTXBJ.FIvpd2moTIueSfJdOdoSji2gOOHHVB8.ZykxGWlUu.', 'User4', 'TestUser', 'bJ3tnk2VANHwkPzXAUul'),
 ('swagger@test.com', true, '$2a$10$UNrUz1STmqeXd/QHI8tZEuCiDl7YzgkOO6Bwf53e4iIMARcJDQfR6', 'Swagger', 'SwaggerLN', 'uUXz4nF5SadFDYi7RuQ4');
 
 INSERT INTO PUBLIC.VOTES (CREATED, DATE, RESTAURANT_ID, USER_ID) VALUES
