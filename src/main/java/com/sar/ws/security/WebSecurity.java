@@ -38,6 +38,8 @@ public class WebSecurity extends WebSecurityConfigurerAdapter {
                 .antMatchers(MEAL_URL, MEAL_URL + "/**").hasRole("ADMIN")
                 .antMatchers(HttpMethod.POST, SIGN_UP_URL)
                 .permitAll()
+                .antMatchers("/v2/api-docs", "/configuration/**", "/swagger*/**", "/webjars/**")
+                .permitAll()
                 .anyRequest().authenticated().and()
                 .addFilter(getAuthenticationFilter())
                 .addFilter(new AuthorizationFilter(authenticationManager(), userRepository))

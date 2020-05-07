@@ -68,7 +68,7 @@ class UserServiceImplTest extends AbstractServiceTest{
     }
 
     @Test
-    void getUser() {
+    void get() {
         when(userRepository.findByEmail(anyString())).thenReturn(Optional.of(userEntity));
         UserDto userDto = userService.getUser(EMAIL);
         assertNotNull(userDto);

@@ -11,6 +11,9 @@ import com.sar.ws.ui.model.response.OperationStatusModel;
 import com.sar.ws.ui.model.response.RequestOperationName;
 import com.sar.ws.ui.model.response.RequestOperationStatus;
 import com.sar.ws.ui.model.response.UserRest;
+import io.swagger.annotations.ApiImplicitParam;
+import io.swagger.annotations.ApiImplicitParams;
+import io.swagger.annotations.ApiOperation;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
@@ -40,6 +43,8 @@ public class UserController {
     @Autowired
     VoteService voteService;
 
+    @ApiOperation(value = "Create User Web Service End Point",
+            notes = "${userController.create.notes}")
     @PostMapping(
             consumes = MediaType.APPLICATION_JSON_VALUE,
             produces = MediaType.APPLICATION_JSON_VALUE)
@@ -52,24 +57,31 @@ public class UserController {
         return userService.create(userDto);
     }
 
+    @ApiOperation(value = "Get User Web Service End Point", notes = "${userController.get.notes}")
+    @ApiImplicitParams({@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}",  paramType = "header")})
     @PostAuthorize("hasRole('ADMIN') or returnObject.userId == principal.userId")
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserView getUser(@PathVariable String id) {
+    public UserView get(@PathVariable String id) {
         return userService.getByUserId(id);
     }
 
+
+    @ApiOperation(value = "Update User Web Service End Point", notes = "${userController.update.notes}")
+    @ApiImplicitParams({@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}",  paramType = "header")})
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
     @PutMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public UserRest updateUser(@PathVariable String id, @RequestBody @Valid UserDetailsRequestModel userDetails) {
+    public UserRest update(@PathVariable String id, @RequestBody @Valid UserDetailsRequestModel userDetails) {
 
         UserDto userDto = new UserDto();
         BeanUtils.copyProperties(userDetails, userDto);
         return userService.updateUser(id, userDto);
     }
 
+    @ApiOperation(value = "Delete User Web Service End Point", notes = "${userController.delete.notes}")
+    @ApiImplicitParams({@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}",  paramType = "header")})
     @PreAuthorize("hasRole('ROLE_ADMIN') or #id == principal.userId")
     @DeleteMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public OperationStatusModel deleteUser(@PathVariable String id) {
+    public OperationStatusModel delete(@PathVariable String id) {
         OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
 
@@ -78,15 +90,20 @@ public class UserController {
         return returnValue;
     }
 
+    @ApiOperation(value = "Get All Users Web Service End Point", notes = "${userController.getAll.notes}")
+    @ApiImplicitParams({@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}",  paramType = "header")})
     @Secured("ROLE_ADMIN")
     @GetMapping(produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<UserView> getUsers(@RequestParam(value = "page", defaultValue = "0") int page,
-                                   @RequestParam(value = "limit", defaultValue = "25") int limit) {
+    public List<UserView> getAll(@RequestParam(value = "page", defaultValue = "0") int page,
+                                 @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
         if (page > 0) page = page - 1;
         return userService.getUsers(page, limit);
     }
 
+    @ApiOperation(value = "Post the Vote of the User Web Service End Point", notes = "${userController" +
+            ".postVote.notes}")
+    @ApiImplicitParams({@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}",  paramType = "header")})
     @PreAuthorize("#userId == principal.userId")
     @PostMapping(path = "/{userId}/votes")
     public OperationStatusModel postVote(@PathVariable String userId,
@@ -96,6 +113,8 @@ public class UserController {
         return voteService.create(userId, restaurantId, postTime);
     }
 
+    @ApiOperation(value = "Get All Votes of the User Web Service End Point", notes = "${userController.getVotes.notes}")
+    @ApiImplicitParams({@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}",  paramType = "header")})
     @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.userId")
     @GetMapping(path = "/{userId}/votes")
     public List<VoteView> getVotes(@Valid @PathVariable String userId,

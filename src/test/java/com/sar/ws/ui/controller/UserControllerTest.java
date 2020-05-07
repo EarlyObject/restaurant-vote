@@ -55,7 +55,7 @@ class UserControllerTest {
     @Test
     void getUser() {
         when(userService.getByUserId(anyString())).thenReturn(userView);
-        UserView returnValue = userController.getUser(USER_ID);
+        UserView returnValue = userController.get(USER_ID);
         assertNotNull(returnValue);
         assertEquals(USER_ID, returnValue.getUserId());
         assertEquals(FIRST_NAME, returnValue.getFirstName());
@@ -67,7 +67,7 @@ class UserControllerTest {
     void updateUser() {
         UserDetailsRequestModel userDetails = new UserDetailsRequestModel();
         when(userService.updateUser(anyString(), any())).thenReturn(userRest);
-        UserRest returnValue = userController.updateUser("", userDetails);
+        UserRest returnValue = userController.update("", userDetails);
         assertNotNull(returnValue);
         assertEquals(USER_ID, returnValue.getUserId());
         assertEquals(FIRST_NAME, returnValue.getFirstName());
@@ -79,7 +79,7 @@ class UserControllerTest {
     void getUsers() {
         List<UserView> userViews = new ArrayList<>(Arrays.asList(getUserView(), getUserView()));
         when(userService.getUsers(anyInt(), anyInt())).thenReturn(userViews);
-        List<UserView> returnValue = userController.getUsers(1, 10);
+        List<UserView> returnValue = userController.getAll(1, 10);
         assertNotNull(returnValue);
         assertEquals(2, returnValue.size());
         assertEquals(FIRST_NAME, returnValue.get(0).getFirstName());
