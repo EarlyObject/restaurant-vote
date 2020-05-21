@@ -1,11 +1,11 @@
-package com.earlyobject.ws.service.impl.unitTests;
+package com.earlyobject.ws.service.unitTests;
 
 import com.earlyobject.ws.TestConfig;
 import com.earlyobject.ws.io.repositories.*;
-import com.earlyobject.ws.service.impl.MealServiceImpl;
-import com.earlyobject.ws.service.impl.RestaurantServiceImpl;
-import com.earlyobject.ws.service.impl.UserServiceImpl;
-import com.earlyobject.ws.service.impl.VoteServiceImpl;
+import com.earlyobject.ws.service.MealService;
+import com.earlyobject.ws.service.RestaurantService;
+import com.earlyobject.ws.service.UserService;
+import com.earlyobject.ws.service.VoteService;
 import com.earlyobject.ws.shared.dto.Utils;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -19,16 +19,16 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 public class AbstractServiceTest {
 
     @InjectMocks
-    UserServiceImpl userService;
+    UserService userService;
 
     @InjectMocks
-    MealServiceImpl mealService;
+    MealService mealService;
 
     @InjectMocks
-    RestaurantServiceImpl restaurantService;
+    RestaurantService restaurantService;
 
     @InjectMocks
-    VoteServiceImpl voteService;
+    VoteService voteService;
 
     @Mock
     Utils utils;

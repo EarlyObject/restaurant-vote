@@ -28,15 +28,6 @@ public class UserEntity extends AbstractBaseEntity implements Serializable {
     @Column(nullable = false)
     private String encryptedPassword;
 
-    /**
-     * by Ardak Sydyknazar:
-     * this Boolean value should be set to false by default,
-     * but because our project does not require much complication,
-     * I set it to false and do not implement email verification in this project
-     */
-    @Column(nullable = false)
-    private Boolean emailVerificationStatus = true;
-
     @ManyToMany(cascade = {CascadeType.PERSIST}, fetch = FetchType.EAGER)
     @JoinTable(name = "users_roles",
             joinColumns = @JoinColumn(name = "users_id", referencedColumnName = "id"),
@@ -90,14 +81,6 @@ public class UserEntity extends AbstractBaseEntity implements Serializable {
         this.encryptedPassword = encryptedPassword;
     }
 
-    public Boolean getEmailVerificationStatus() {
-        return emailVerificationStatus;
-    }
-
-    public void setEmailVerificationStatus(Boolean emailVerificationStatus) {
-        this.emailVerificationStatus = emailVerificationStatus;
-    }
-
     public Collection<Role> getRoles() {
         return roles;
     }
@@ -122,7 +105,6 @@ public class UserEntity extends AbstractBaseEntity implements Serializable {
                 ", lastName='" + lastName + '\'' +
                 ", email='" + email + '\'' +
                 ", encryptedPassword='" + encryptedPassword + '\'' +
-                ", emailVerificationStatus=" + emailVerificationStatus +
                 ", roles=" + roles +
                 ", votes=" + votes +
                 ", id=" + id +

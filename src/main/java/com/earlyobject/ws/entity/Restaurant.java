@@ -25,14 +25,10 @@ public class Restaurant extends AbstractBaseEntity {
     @OrderBy("date DESC")
     private List<Meal> meals;
 
-    //check lazyCollection
     @LazyCollection(LazyCollectionOption.EXTRA)
     @OneToMany(mappedBy = "restaurant", cascade = CascadeType.ALL, orphanRemoval = true)
     @OrderBy("created DESC")
     private Set<Vote> votes;
-
-   /* @Formula("select count(*) from votes v where v.restaurant_id = id")
-    private int votesCount;*/
 
     public Restaurant() {
     }
@@ -43,7 +39,6 @@ public class Restaurant extends AbstractBaseEntity {
         this.address = restaurant.getAddress();
         this.meals = restaurant.getMeals();
         this.votes = restaurant.getVotes();
-//        this.votesCount = restaurant.getVotesCount();
     }
 
     public String getName() {
@@ -78,13 +73,6 @@ public class Restaurant extends AbstractBaseEntity {
         this.votes = votes;
     }
 
-    /*public Integer getVotesCount() {
-        return votes.size();
-    }*/
-
-//    public void setVotesCount(int votesCount) {
-//        this.votesCount = votesCount;
-//    }
 
     @Override
     public String toString() {

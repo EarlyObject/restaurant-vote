@@ -20,9 +20,7 @@ public class MealDto {
     @Size(min = 1, max = 100, message = "Description should be between 2 and 100 characters")
     private String description;
 
-    @NotNull(message = "Price is missing")
-    @Range(min = 1, max = 100000, message = "Price should be between 1 and 100000")
-    private Double price;
+    private int price;
 
     @NotNull(message = "Restaurant ID is missing")
     @Range(min = 1000, message = "Restaurant ID must be greater than 1000")
@@ -55,11 +53,11 @@ public class MealDto {
         this.description = description;
     }
 
-    public Double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

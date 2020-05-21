@@ -1,8 +1,8 @@
 package com.earlyobject.ws.ui.controller;
 
-import com.earlyobject.ws.shared.dto.MealDto;
 import com.earlyobject.ws.exceptions.CustomServiceException;
 import com.earlyobject.ws.service.MealService;
+import com.earlyobject.ws.shared.dto.MealDto;
 import com.earlyobject.ws.shared.view.MealView;
 import com.earlyobject.ws.ui.model.response.OperationStatusModel;
 import com.earlyobject.ws.ui.model.response.RequestOperationName;
@@ -16,7 +16,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.util.List;
 
 @Validated
@@ -45,7 +44,7 @@ public class MealController {
             value = "${userController.authorizationHeader.description}",
             paramType = "header")})
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public MealView get(@PathVariable @Min(1000) long id) {
+    public MealView get(@PathVariable long id) {
         return mealService.get(id);
     }
 
@@ -56,7 +55,7 @@ public class MealController {
             value = "${userController.authorizationHeader.description}",
             paramType = "header")})
     @PutMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public MealDto update(@PathVariable @Min(1000) long id, @Valid @RequestBody MealDto mealDto) {
+    public MealDto update(@PathVariable long id, @Valid @RequestBody MealDto mealDto) {
         return mealService.update(id, mealDto);
     }
 
@@ -67,7 +66,7 @@ public class MealController {
             value = "${userController.authorizationHeader.description}",
             paramType = "header")})
     @DeleteMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public OperationStatusModel delete(@PathVariable @Min(1000) long id) {
+    public OperationStatusModel delete(@PathVariable long id) {
         OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
 
@@ -86,7 +85,6 @@ public class MealController {
     public List<MealView> getAll(@RequestParam(value = "page", defaultValue = "0") int page,
                                  @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
-        if (page > 0) page = page - 1;
         return mealService.getAll(page, limit);
     }
 }

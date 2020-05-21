@@ -4,7 +4,6 @@ import com.earlyobject.ws.entity.Role;
 import com.earlyobject.ws.entity.UserEntity;
 import com.earlyobject.ws.entity.Vote;
 import com.earlyobject.ws.shared.Roles;
-import com.earlyobject.ws.shared.dto.UserDto;
 import com.earlyobject.ws.shared.view.UserView;
 import com.earlyobject.ws.ui.model.response.UserRest;
 import org.springframework.data.projection.ProjectionFactory;
@@ -13,10 +12,9 @@ import org.springframework.data.projection.SpelAwareProxyProjectionFactory;
 import java.util.*;
 
 import static com.earlyobject.ws.VoteTestData.VOTE;
-import static com.earlyobject.ws.shared.Roles.ROLE_USER;
 
 public class UserTestData {
-    public static final long ID = 1010;
+    public static final long ID = 1020;
     public static final String USER_ID = "dbkpmrTiPq1MbmFaK4LD";
     public static final String FIRST_NAME = "UserName";
     public static final String LAST_NAME = "UserLastName";
@@ -32,7 +30,6 @@ public class UserTestData {
         userEntity.setLastName(LAST_NAME);
         userEntity.setEmail(EMAIL);
         userEntity.setEncryptedPassword(ENCRYPTED_PASSWORD);
-        userEntity.setEmailVerificationStatus(true);
 
         Role role = new Role(Roles.ROLE_USER.name());
         Set<Role> roleSet = new HashSet<>(Collections.singletonList(role));
@@ -58,15 +55,5 @@ public class UserTestData {
         userRest.setLastName(LAST_NAME);
         userRest.setEmail(EMAIL);
         return userRest;
-    }
-
-    public static UserDto getUserDto() {
-        UserDto userDto = new UserDto();
-        userDto.setFirstName(FIRST_NAME);
-        userDto.setLastName(LAST_NAME);
-        userDto.setEmail(EMAIL);
-        userDto.setPassword(PASSWORD);
-        userDto.setRoles(new HashSet<>(Collections.singletonList(ROLE_USER.name())));
-        return userDto;
     }
 }

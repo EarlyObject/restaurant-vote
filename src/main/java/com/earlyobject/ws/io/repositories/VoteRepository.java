@@ -10,10 +10,13 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
+@Transactional
 public interface VoteRepository extends PagingAndSortingRepository<Vote, Long> {
 
     @Transactional(readOnly = true)
     List<VoteView> getAllByUserId(long id, Pageable pageable);
 
+    @Transactional(readOnly = true)
     Optional<Vote> findByUserIdAndDate(long userId, LocalDate date);
+
 }

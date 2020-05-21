@@ -18,6 +18,7 @@ public class UserPrincipal implements UserDetails {
 
     private UserEntity userEntity;
     private String userId;
+    private long id;
 
     public UserPrincipal() {
     }
@@ -25,6 +26,7 @@ public class UserPrincipal implements UserDetails {
     public UserPrincipal(UserEntity userEntity) {
         this.userEntity = userEntity;
         this.userId = userEntity.getUserId();
+        this.id = userEntity.getId();
     }
 
 
@@ -45,9 +47,7 @@ public class UserPrincipal implements UserDetails {
                 authorityEntities.addAll(role.getAuthorities());
             });
         }
-        authorityEntities.forEach((authority) -> {
-            authorities.add(new SimpleGrantedAuthority(authority.getName()));
-        });
+        authorityEntities.forEach((authority) -> authorities.add(new SimpleGrantedAuthority(authority.getName())));
 
         return authorities;
     }
@@ -79,7 +79,7 @@ public class UserPrincipal implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return this.userEntity.getEmailVerificationStatus();
+        return true;
     }
 
     public String getUserId() {
@@ -88,5 +88,13 @@ public class UserPrincipal implements UserDetails {
 
     public void setUserId(String userId) {
         this.userId = userId;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 }

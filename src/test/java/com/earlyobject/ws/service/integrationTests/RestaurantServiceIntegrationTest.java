@@ -1,9 +1,9 @@
-package com.earlyobject.ws.service.impl.integrationTests;
+package com.earlyobject.ws.service.integrationTests;
 
-import com.earlyobject.ws.exceptions.CustomServiceException;
 import com.earlyobject.ws.entity.Restaurant;
+import com.earlyobject.ws.exceptions.NotFoundException;
 import com.earlyobject.ws.io.repositories.RestaurantRepository;
-import com.earlyobject.ws.service.impl.RestaurantServiceImpl;
+import com.earlyobject.ws.service.RestaurantService;
 import com.earlyobject.ws.shared.dto.RestaurantDto;
 import com.earlyobject.ws.shared.view.AdminRestaurantView;
 import com.earlyobject.ws.shared.view.JPAProjection;
@@ -18,10 +18,10 @@ import java.util.Optional;
 import static com.earlyobject.ws.RestaurantTestData.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-public class RestaurantServiceImplIntegrationTest extends AbstractIntegrationTest {
+public class RestaurantServiceIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
-    RestaurantServiceImpl restaurantService;
+    RestaurantService restaurantService;
 
     @Autowired
     RestaurantRepository restaurantRepository;
@@ -49,15 +49,15 @@ public class RestaurantServiceImplIntegrationTest extends AbstractIntegrationTes
 
     @Test
     void get() {
-        AdminRestaurantView projection = restaurantService.get(RESTAURANT_ID, false);
+        AdminRestaurantView projection = restaurantService.get(RESTAURANT_ID);
         assertEquals(RESTAURANT_ID, projection.getId());
         assertEquals(RESTAURANT_ADDRESS, projection.getAddress());
         assertEquals(RESTAURANT_NAME, projection.getName());
     }
 
     @Test
-    void get_loadAll() {
-        RestaurantView projection = restaurantService.get(RESTAURANT_ID, true);
+    void getWithMeal() {
+        RestaurantView projection = restaurantService.getWithMeal(RESTAURANT_ID);
         assertEquals(RESTAURANT_ID, projection.getId());
         assertEquals(RESTAURANT_ADDRESS, projection.getAddress());
         assertEquals(RESTAURANT_NAME, projection.getName());
@@ -86,12 +86,12 @@ public class RestaurantServiceImplIntegrationTest extends AbstractIntegrationTes
     @Test
     void delete() {
         restaurantService.delete(1007L);
-        assertThrows(CustomServiceException.class, () -> restaurantService.get(1007L, false));
+        assertThrows(NotFoundException.class, () -> restaurantService.get(1007L));
     }
 
     @Test
     void getAll() {
-        List<? extends JPAProjection> all = restaurantService.getAll(0, 10, false);
+        List<? extends JPAProjection> all = restaurantService.getAll(0, 10);
         assertNotNull(all);
         assertEquals(3, all.size());
     }

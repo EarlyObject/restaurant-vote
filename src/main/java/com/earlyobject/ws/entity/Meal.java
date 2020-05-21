@@ -21,7 +21,7 @@ public class Meal extends AbstractBaseEntity {
     private String description;
 
     @Column(name = "price", nullable = false)
-    private Double price;
+    private int price;
 
     @JoinColumn(name = "restaurant_id", insertable = false, updatable = false)
     @ManyToOne(fetch = FetchType.LAZY)
@@ -33,7 +33,7 @@ public class Meal extends AbstractBaseEntity {
     public Meal() {
     }
 
-    public Meal(long id, LocalDate date, String description, Double price, long restaurantId) {
+    public Meal(long id, LocalDate date, String description, int price, long restaurantId) {
         super(id);
         this.date = date;
         this.description = description;
@@ -57,11 +57,11 @@ public class Meal extends AbstractBaseEntity {
         this.description = description;
     }
 
-    public Double getPrice() {
+    public int getPrice() {
         return price;
     }
 
-    public void setPrice(Double price) {
+    public void setPrice(int price) {
         this.price = price;
     }
 

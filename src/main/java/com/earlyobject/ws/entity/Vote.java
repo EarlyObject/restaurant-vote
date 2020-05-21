@@ -10,7 +10,8 @@ import java.time.LocalDateTime;
 @Entity
 @Table(name = "votes",
         indexes = {@Index(name = "idx_v_userId", columnList = "user_id"),
-                @Index(name = "idx_v_userIdAndDate", columnList = "user_id, date")})
+                @Index(name = "idx_v_userIdAndDate", columnList = "user_id, date")},
+        uniqueConstraints = {@UniqueConstraint(columnNames = {"user_id", "date"})})
 public class Vote extends AbstractBaseEntity {
 
     @Column(name = "created", nullable = false)

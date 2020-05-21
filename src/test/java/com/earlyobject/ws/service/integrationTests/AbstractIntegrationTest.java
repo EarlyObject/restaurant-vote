@@ -1,4 +1,4 @@
-package com.earlyobject.ws.service.impl.integrationTests;
+package com.earlyobject.ws.service.integrationTests;
 
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;

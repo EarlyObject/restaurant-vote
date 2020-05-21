@@ -1,8 +1,8 @@
 package com.earlyobject.ws.ui.controller;
 
-import com.earlyobject.ws.shared.dto.RestaurantDto;
 import com.earlyobject.ws.service.MealService;
 import com.earlyobject.ws.service.RestaurantService;
+import com.earlyobject.ws.shared.dto.RestaurantDto;
 import com.earlyobject.ws.shared.view.JPAProjection;
 import com.earlyobject.ws.shared.view.MealView;
 import com.earlyobject.ws.ui.model.response.OperationStatusModel;
@@ -21,7 +21,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
@@ -56,9 +55,14 @@ public class RestaurantController {
             value = "${userController.authorizationHeader.description}",
             paramType = "header")})
     @GetMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public <T extends JPAProjection> T get(@PathVariable @Min(1000) long id,
-                                           @RequestParam Optional<Boolean> loadAll) throws Exception {
-        return restaurantService.get(id, loadAll.orElse(false));
+    public <T extends JPAProjection> T get(@PathVariable long id,
+                                           @RequestParam Optional<Boolean> loadAll) {
+
+        if (loadAll.isEmpty() || !loadAll.get()) {
+            return restaurantService.get(id);
+        } else {
+            return restaurantService.getWithMeal(id);
+        }
     }
 
 
@@ -68,15 +72,15 @@ public class RestaurantController {
             value = "${userController.authorizationHeader.description}",
             paramType = "header")})
     @GetMapping(path = {"/{id}/filter"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public List<MealView> getFiltered(@PathVariable @Min(1000) long id,
+    public List<MealView> getFiltered(@PathVariable long id,
                                       @RequestParam(name = "start", required = false)
                                       @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                               LocalDate start,
                                       @RequestParam(name = "end", required = false) @DateTimeFormat(iso = DateTimeFormat.ISO.DATE)
                                               LocalDate end,
                                       @RequestParam(value = "page", defaultValue = "0") int page,
-                                      @RequestParam(value = "limit", defaultValue = "25") int limit) throws Exception {
-        if (page > 0) page = page - 1;
+                                      @RequestParam(value = "limit", defaultValue = "25") int limit) {
+
         Pageable pageable = PageRequest.of(page, limit);
         return mealService.getFiltered(id, start, end, pageable);
     }
@@ -89,7 +93,7 @@ public class RestaurantController {
             paramType = "header")})
     @Secured("ROLE_ADMIN")
     @PutMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public RestaurantDto update(@PathVariable @Min(1000) long id, @RequestBody @Valid RestaurantDto restaurantDto) {
+    public RestaurantDto update(@PathVariable long id, @RequestBody @Valid RestaurantDto restaurantDto) {
         return restaurantService.update(id, restaurantDto);
     }
 
@@ -101,7 +105,7 @@ public class RestaurantController {
             paramType = "header")})
     @Secured("ROLE_ADMIN")
     @DeleteMapping(path = {"/{id}"}, produces = MediaType.APPLICATION_JSON_VALUE)
-    public OperationStatusModel delete(@PathVariable @Min(1000) long id) {
+    public OperationStatusModel delete(@PathVariable long id) {
         OperationStatusModel returnValue = new OperationStatusModel();
         returnValue.setOperationName(RequestOperationName.DELETE.name());
 
@@ -121,7 +125,10 @@ public class RestaurantController {
                                                 @RequestParam(value = "limit", defaultValue = "25") int limit,
                                                 @RequestParam Optional<Boolean> loadAll) {
 
-        if (page > 0) page = page - 1;
-        return restaurantService.getAll(page, limit, loadAll.orElse(false));
+        if (loadAll.isEmpty() || !loadAll.get()) {
+            return restaurantService.getAll(page, limit);
+        } else {
+            return restaurantService.getAllWithMeals(page, limit);
+        }
     }
 }

@@ -1,12 +1,13 @@
 package com.earlyobject.ws.ui.controller;
 
-import com.earlyobject.ws.shared.Roles;
-import com.earlyobject.ws.shared.dto.UserDto;
-import com.earlyobject.ws.shared.view.VoteView;
 import com.earlyobject.ws.exceptions.CustomServiceException;
 import com.earlyobject.ws.service.UserService;
 import com.earlyobject.ws.service.VoteService;
+import com.earlyobject.ws.shared.Roles;
+import com.earlyobject.ws.shared.dto.UserDto;
+import com.earlyobject.ws.shared.utils.AuthUtil;
 import com.earlyobject.ws.shared.view.UserView;
+import com.earlyobject.ws.shared.view.VoteView;
 import com.earlyobject.ws.ui.model.request.UserDetailsRequestModel;
 import com.earlyobject.ws.ui.model.response.OperationStatusModel;
 import com.earlyobject.ws.ui.model.response.RequestOperationName;
@@ -25,7 +26,6 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import javax.validation.constraints.Min;
 import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Collections;
@@ -111,31 +111,41 @@ public class UserController {
     public List<UserView> getAll(@RequestParam(value = "page", defaultValue = "0") int page,
                                  @RequestParam(value = "limit", defaultValue = "25") int limit) {
 
-        if (page > 0) page = page - 1;
         return userService.getAll(page, limit);
     }
 
     @ApiOperation(value = "Post the Vote of the User Web Service End Point", notes = "${userController" +
             ".postVote.notes}")
     @ApiImplicitParams({@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}",  paramType = "header")})
-    @PreAuthorize("#userId == principal.userId")
-    @PostMapping(path = "/{userId}/votes")
-    public OperationStatusModel postVote(@PathVariable String userId,
-                                         @RequestParam @Min(1000) long restaurantId) {
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @PostMapping(path = "/votes")
+    public OperationStatusModel postVote(@RequestParam long restaurantId) {
+
+        long id = AuthUtil.getId();
 
         LocalDateTime postTime = LocalDateTime.now();
-        return voteService.create(userId, restaurantId, postTime);
+        return voteService.create(id, restaurantId, postTime);
     }
+
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @PutMapping(path = "/votes")
+    public OperationStatusModel updateVote(@RequestParam long restaurantId) {
+
+        long id = AuthUtil.getId();
+
+        LocalDateTime postTime = LocalDateTime.now();
+        return voteService.update(id, restaurantId, postTime);
+    }
+
+
 
     @ApiOperation(value = "Get All Votes of the User Web Service End Point", notes = "${userController.getVotes.notes}")
     @ApiImplicitParams({@ApiImplicitParam(name = "authorization", value = "${userController.authorizationHeader.description}",  paramType = "header")})
-    @PreAuthorize("hasRole('ROLE_ADMIN') or #userId == principal.userId")
-    @GetMapping(path = "/{userId}/votes")
-    public List<VoteView> getVotes(@Valid @PathVariable String userId,
-                                   @RequestParam(value = "page", defaultValue = "0") int page,
+    @Secured({"ROLE_USER","ROLE_ADMIN"})
+    @GetMapping(path = "/votes")
+    public List<VoteView> getVotes(@RequestParam(value = "page", defaultValue = "0") int page,
                                    @RequestParam(value = "limit", defaultValue = "25") int limit) {
-
-        if (page > 0) page = page - 1;
-        return voteService.getAll(userId, page, limit);
+        long id = AuthUtil.getId();
+        return voteService.getAll(id, page, limit);
     }
 }

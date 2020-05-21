@@ -1,10 +1,10 @@
 package com.earlyobject.ws.security;
 
 import com.earlyobject.ws.SpringApplicationContext;
+import com.earlyobject.ws.service.UserService;
 import com.earlyobject.ws.shared.dto.UserDto;
 import com.earlyobject.ws.ui.model.request.UserLoginRequestModel;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.earlyobject.ws.service.UserService;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -14,7 +14,6 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 
 import javax.servlet.FilterChain;
-import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
@@ -48,7 +47,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
 
     @Override
     protected void successfulAuthentication(HttpServletRequest req, HttpServletResponse res, FilterChain chain,
-                                            Authentication auth) throws IOException, ServletException {
+                                            Authentication auth) {
 
         String userName = ((UserPrincipal) auth.getPrincipal()).getUsername();
 
@@ -59,7 +58,7 @@ public class AuthenticationFilter extends UsernamePasswordAuthenticationFilter {
                 .signWith(SignatureAlgorithm.HS512, SecurityConstants.getTokenSecret())
                 .compact();
 
-        UserService userService = (UserService) SpringApplicationContext.getBean("userServiceImpl");
+        UserService userService = (UserService) SpringApplicationContext.getBean("userService");
         UserDto userDto = userService.get(userName);
 
         res.addHeader(SecurityConstants.HEADER_STRING, SecurityConstants.TOKEN_PREFIX + token);

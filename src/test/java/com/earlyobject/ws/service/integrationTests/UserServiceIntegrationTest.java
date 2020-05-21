@@ -1,6 +1,6 @@
-package com.earlyobject.ws.service.impl.integrationTests;
+package com.earlyobject.ws.service.integrationTests;
 
-import com.earlyobject.ws.exceptions.CustomServiceException;
+import com.earlyobject.ws.exceptions.NotFoundException;
 import com.earlyobject.ws.io.repositories.UserRepository;
 import com.earlyobject.ws.service.UserService;
 import com.earlyobject.ws.shared.dto.UserDto;
@@ -16,7 +16,7 @@ import java.util.List;
 import static com.earlyobject.ws.UserTestData.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class UserServiceImplIntegrationTest extends AbstractIntegrationTest {
+class UserServiceIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     UserRepository userRepository;
@@ -73,12 +73,12 @@ class UserServiceImplIntegrationTest extends AbstractIntegrationTest {
     @Test
     void delete() {
         userService.delete(USER_ID);
-        assertThrows(CustomServiceException.class, () -> userService.delete(USER_ID));
+        assertThrows(NotFoundException.class, () -> userService.delete(USER_ID));
     }
 
     @Test
     void delete_wrongUserId() {
-        assertThrows(CustomServiceException.class, () -> userService.delete("USER_ID"));
+        assertThrows(NotFoundException.class, () -> userService.delete("USER_ID"));
     }
 
     @Test

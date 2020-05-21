@@ -26,7 +26,6 @@ public class RestaurantTestData {
         dummyRestaurant.setAddress(RESTAURANT_ADDRESS);
         dummyRestaurant.setMeals(MEALS);
         dummyRestaurant.setVotes(VOTES);
-//        dummyRestaurant.setVotesCount(VOTES.size());
         return dummyRestaurant;
     }
 

@@ -23,7 +23,7 @@ public interface RestaurantRepository extends PagingAndSortingRepository<Restaur
     Optional<AdminRestaurantView> getAdminRestaurantViewById(long id);
 
     @Query("SELECT r FROM Restaurant r LEFT JOIN FETCH r.meals m WHERE m.date=?1")
-    List<RestaurantView> getAllWithMealsAndVotes(LocalDate date, Pageable pageable);
+    List<RestaurantView> getAllWithMeals(LocalDate date, Pageable pageable);
 
-    List<AdminRestaurantView> getAllBy();
+    List<AdminRestaurantView> getAllBy(Pageable pageable);
 }

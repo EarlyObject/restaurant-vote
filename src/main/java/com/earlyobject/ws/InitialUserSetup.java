@@ -17,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 @Component
 public class InitialUserSetup {
@@ -55,10 +56,9 @@ public class InitialUserSetup {
             adminUser.setFirstName("Admin");
             adminUser.setLastName("DefaultAdmin");
             adminUser.setEmail("admin@test.com");
-            adminUser.setEmailVerificationStatus(true);
             adminUser.setUserId(utils.generateUserId(30));
             adminUser.setEncryptedPassword(bCryptPasswordEncoder.encode("123"));
-            adminUser.setRoles(Arrays.asList(roleAdmin));
+            adminUser.setRoles(Collections.singletonList(roleAdmin));
 
             userRepository.save(adminUser);
         }
@@ -66,7 +66,7 @@ public class InitialUserSetup {
     }
 
     @Transactional
-    private Authority createAuthority(String name) {
+    Authority createAuthority(String name) {
         Authority authority = authorityRepository.findByName(name);
         if (authority == null) {
             authority = new Authority(name);
@@ -76,7 +76,7 @@ public class InitialUserSetup {
     }
 
     @Transactional
-    private Role createRole(String name, Collection<Authority> authorities) {
+    Role createRole(String name, Collection<Authority> authorities) {
         Role role = roleRepository.findByName(name);
         if (role == null) {
             role = new Role(name);

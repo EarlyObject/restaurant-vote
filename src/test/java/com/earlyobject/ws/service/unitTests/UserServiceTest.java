@@ -1,4 +1,4 @@
-package com.earlyobject.ws.service.impl.unitTests;
+package com.earlyobject.ws.service.unitTests;
 
 import com.earlyobject.ws.entity.UserEntity;
 import com.earlyobject.ws.shared.Roles;
@@ -20,7 +20,7 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-class UserServiceImplTest extends AbstractServiceTest{
+class UserServiceTest extends AbstractServiceTest{
 
     UserEntity userEntity;
     UserDto userDto;

@@ -1,7 +1,7 @@
-package com.earlyobject.ws.service.impl.unitTests;
+package com.earlyobject.ws.service.unitTests;
 
-import com.earlyobject.ws.exceptions.CustomServiceException;
 import com.earlyobject.ws.entity.Meal;
+import com.earlyobject.ws.exceptions.NotFoundException;
 import com.earlyobject.ws.shared.dto.MealDto;
 import com.earlyobject.ws.shared.view.MealView;
 import org.junit.jupiter.api.BeforeEach;
@@ -23,7 +23,7 @@ import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
-class MealServiceImplTest extends AbstractServiceTest {
+class MealServiceTest extends AbstractServiceTest {
 
     MealDto mealDto;
 
@@ -58,7 +58,7 @@ class MealServiceImplTest extends AbstractServiceTest {
     @Test
     void getById_MealServiceException() {
         when(mealRepository.getById(anyLong())).thenReturn(Optional.empty());
-        assertThrows(CustomServiceException.class, () -> mealService.get(1L));
+        assertThrows(NotFoundException.class, () -> mealService.get(1L));
     }
 
     @Test

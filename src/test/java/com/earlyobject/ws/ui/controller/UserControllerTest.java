@@ -1,6 +1,6 @@
 package com.earlyobject.ws.ui.controller;
 
-import com.earlyobject.ws.service.impl.UserServiceImpl;
+import com.earlyobject.ws.service.UserService;
 import com.earlyobject.ws.shared.view.UserView;
 import com.earlyobject.ws.ui.model.request.UserDetailsRequestModel;
 import com.earlyobject.ws.ui.model.response.UserRest;
@@ -26,7 +26,7 @@ class UserControllerTest {
     UserController userController;
 
     @Mock
-    UserServiceImpl userService;
+    UserService userService;
 
     UserRest userRest;
     UserView userView = getUserView();

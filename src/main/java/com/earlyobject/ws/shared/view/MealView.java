@@ -9,7 +9,7 @@ public interface MealView {
 
     String getDescription();
 
-    Double getPrice();
+    int getPrice();
 
     long getRestaurantId();
 
@@ -19,7 +19,7 @@ public interface MealView {
 
     void setDescription(String description);
 
-    void setPrice(Double price);
+    void setPrice(int price);
 
     void setRestaurantId(long id);
 }

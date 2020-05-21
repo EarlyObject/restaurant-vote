@@ -1,6 +1,6 @@
-package com.earlyobject.ws.service.impl.integrationTests;
+package com.earlyobject.ws.service.integrationTests;
 
-import com.earlyobject.ws.exceptions.CustomServiceException;
+import com.earlyobject.ws.exceptions.NotFoundException;
 import com.earlyobject.ws.io.repositories.MealRepository;
 import com.earlyobject.ws.service.MealService;
 import com.earlyobject.ws.shared.dto.MealDto;
@@ -16,7 +16,7 @@ import java.util.List;
 import static com.earlyobject.ws.MealTestData.*;
 import static org.junit.jupiter.api.Assertions.*;
 
-class MealServiceImplIntegrationTest extends AbstractIntegrationTest {
+class MealServiceIntegrationTest extends AbstractIntegrationTest {
 
     @Autowired
     MealRepository mealRepository;
@@ -54,20 +54,20 @@ class MealServiceImplIntegrationTest extends AbstractIntegrationTest {
         MealDto mealDto = new MealDto();
         mealDto.setDescription("NewDescription");
         mealDto.setDate(DATE);
-        mealDto.setPrice(400.00);
+        mealDto.setPrice(400);
         mealDto.setRestaurantId(1009);
         MealDto updatedDto = mealService.update(1016L, mealDto);
         assertNotNull(updatedDto);
         assertEquals(DATE, updatedDto.getDate());
         assertEquals(1009, updatedDto.getRestaurantId());
         assertEquals("NewDescription", updatedDto.getDescription());
-        assertEquals(400.00, updatedDto.getPrice());
+        assertEquals(400, updatedDto.getPrice());
     }
 
     @Test
     void delete() {
         mealService.delete(1016L);
-        assertThrows(CustomServiceException.class, () -> mealService.get(1016L));
+        assertThrows(NotFoundException.class, () -> mealService.get(1016L));
     }
 
     @Test
